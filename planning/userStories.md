@@ -7,3 +7,4 @@ as a user I would like to be able to view more detail about a coin if selected
 as a user I would like to erase my wallets from storage
 as a user I would like to mint SLP tokens
 as a user I would like to burn SLP tokens
+as a user I would like to put up offers on my tokens to swap them for another token
