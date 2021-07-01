@@ -1,4 +1,4 @@
-## List of resources
+# List of resources
 
 [mainnet.cash](https://mainnet.cash/)
 
