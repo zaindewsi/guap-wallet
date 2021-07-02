@@ -1,0 +1,75 @@
+.wallet {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.add-wallet {
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  margin: 2em;
+  height: 25vh;
+  background-color: white;
+  box-shadow: 3px 3px;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+}
+
+.send {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  width: 50%;
+  background-color: white;
+  margin-left: 1em;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+  }
+}
+.receive {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid black;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  padding: 2em;
+  width: 50%;
+  background-color: white;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    margin: auto;
+  }
+}
+
+.balance {
+  border: 1px solid black;
+  text-align: center;
+  padding: 2em;
+  height: 35vh;
+  background-color: white;
+  margin-top: 1%;
+  margin-bottom: 1em;
+}
+
+.transfer {
+  display: flex;
+  height: 43vh;
+}
