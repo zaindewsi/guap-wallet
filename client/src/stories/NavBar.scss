@@ -1,4 +1,6 @@
 .navbar {
+  display: flex;
+  justify-content: space-between;
   width: 100%;
   min-height: 6vh;
   align-items: center;
@@ -12,4 +14,9 @@
 .logo {
   height: 60px;
   width: 60px;
+}
+
+.settings-icon {
+  color: #b8b8b8;
+  font-size: 2.5em;
 }
