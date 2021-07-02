@@ -1,0 +1,33 @@
+.menu-item {
+  display: flex;
+  border-bottom: 1px solid #b8b8b8;
+
+  width: 100%;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 1em;
+
+  &:hover {
+    color: white;
+  }
+
+  &:active {
+    background-color: #7ed957;
+  }
+}
+.menu-item-icon {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  font-size: 1.25em;
+  height: 100px;
+  margin-right: 0.5em;
+  color: #787777;
+}
+.menu-item-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25em;
+  color: #787777;
+}

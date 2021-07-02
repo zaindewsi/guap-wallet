@@ -19,4 +19,18 @@
 .settings-icon {
   color: #b8b8b8;
   font-size: 2.5em;
+
+  &:hover {
+    color: white;
+    cursor: pointer;
+  }
+
+  &:active {
+    color: #7ed957;
+  }
+}
+
+.settings-button {
+  background-color: transparent;
+  border: none;
 }

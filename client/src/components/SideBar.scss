@@ -1,0 +1,16 @@
+.sidebar {
+  height: 100%;
+  width: 15%;
+  position: fixed;
+  z-index: 1;
+  margin-top: 3vh;
+  left: 0;
+  background-color: rgb(255, 255, 255);
+  overflow-x: hidden;
+  padding-top: 20px;
+  border: 1px solid #b8b8b8;
+}
+
+body {
+  background-color: #f0f1ef;
+}
