@@ -3,22 +3,21 @@ import QRCode from "qrcode.react";
 import Switch from "react-switch";
 import { useState } from "react";
 
-const Receive = () => {
+const Receive = (props) => {
   const [toggle, setToggle] = useState(false);
 
   const handleChange = (checked) => {
     toggle ? setToggle(false) : setToggle(true);
   };
 
-  const addr = "bitcoincash:qqjettkgjzhxmwjxm6kduxej7w26p5gr4gaucp6yrq";
   return (
     <div className="receive">
       <h1>
         <FaWallet />
         Receive
       </h1>
-      <QRCode value={addr} />
-      <p>{addr}</p>
+      <QRCode value={props.cashAddress} />
+      <p>{props.cashAddress}</p>
       <Switch
         checked={toggle}
         onChange={handleChange}
