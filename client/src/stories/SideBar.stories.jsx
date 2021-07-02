@@ -1,7 +1,7 @@
 import SideBar from "../components/SideBar";
 
 export default {
-  title: "Example/SideBar  ",
+  title: "App/SideBar  ",
   component: SideBar,
   argTypes: { onClick: { action: "clicked" } },
 };

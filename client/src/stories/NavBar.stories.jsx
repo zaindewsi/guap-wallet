@@ -1,7 +1,7 @@
 import NavBar from "../components/NavBar";
 
 export default {
-  title: "Example/NavBar  ",
+  title: "App/NavBar  ",
   component: NavBar,
   argTypes: { onClick: { action: "clicked" } },
 };

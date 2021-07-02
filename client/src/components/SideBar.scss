@@ -1,14 +1,12 @@
 .sidebar {
-  height: 100%;
-  width: 15%;
+  height: 94vh;
   position: fixed;
-  z-index: 1;
-  margin-top: 3vh;
-  left: 0;
+  width: 15%;
+  margin-top: 6vh;
   background-color: rgb(255, 255, 255);
-  overflow-x: hidden;
-  padding-top: 20px;
   border: 1px solid #b8b8b8;
+  top: 0;
+  left: 0;
 }
 
 body {
