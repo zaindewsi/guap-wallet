@@ -1,6 +1,6 @@
 import "./Body.scss";
 import Wallet from "./Wallet";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 
 const Body = () => {
   return (

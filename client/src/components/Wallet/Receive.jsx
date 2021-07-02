@@ -16,8 +16,8 @@ const Receive = (props) => {
         <FaWallet />
         Receive
       </h1>
-      <QRCode value={props.cashAddress} />
-      <p>{props.cashAddress}</p>
+      <QRCode value={toggle ? props.slpAddress : props.cashAddress} />
+      <p>{toggle ? props.slpAddress : props.cashAddress}</p>
       <Switch
         checked={toggle}
         onChange={handleChange}
