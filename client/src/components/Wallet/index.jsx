@@ -41,7 +41,9 @@ const Wallet = () => {
     getBalance();
   };
 
+  
   const getBalance = async () => {
+    const array = [];
     setLoading(true);
     const currentBalance = await walletInfo(parsedWallet.cashAddress);
     const tokenArr = currentBalance.tokens;
@@ -49,21 +51,22 @@ const Wallet = () => {
 
     setTknBalance(tokenBalance);
 
-    const tokenArray = tokenArr.map((token) => {
+    tokenArr.forEach((token) => {
       lookupToken(token.tokenId).then((res) => {
-        setTknList([...tknList, res]);
-        console.log(tknList);
+        array.push(res)
+        setTknList([...array]);
       });
     });
 
-    console.log("TOKEN ARRAY:", tokenArray);
-    // setTknList(tokenArray);
-    console.log("TOKEN LIST:", tknList);
+    
+
     const cadBalance = currentBalance.cadBalanceCents;
     setBalance(currentBalance.balance);
     setCadBalance(cadBalance);
     setLoading(false);
   };
+  
+
 
   const createNewWallet = async () => {
     const newWallet = await createWallet();
@@ -72,7 +75,6 @@ const Wallet = () => {
 
   const restoreExistingWallet = async (seed) => {
     const existingWallet = await restoreWallet(seed);
-    // console.log(existingWallet);
     setWallet(JSON.stringify(existingWallet));
   };
 
