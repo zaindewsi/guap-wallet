@@ -1,6 +1,6 @@
 const Send = () => {
   return (
-    <div class="send">
+    <div className="send">
       <h1>Send</h1>
       <form>
         <input type="text" placeholder="address" />
