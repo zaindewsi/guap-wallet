@@ -13,6 +13,7 @@ import "./Wallet.scss";
 const Wallet = () => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
+  const [cadBalance, setCadBalance] = useState(0);
 
   useEffect(() => {
     if (wallet) {
@@ -30,9 +31,11 @@ const Wallet = () => {
 
   const getBalance = async () => {
     const currentBalance = await walletInfo(parsedWallet.cashAddress);
-    console.log(currentBalance);
     const tokenBalance = currentBalance.tokens;
+    const cadBalance = currentBalance.cadBalanceCents;
+    console.log(cadBalance);
     setBalance(currentBalance.balance);
+    setCadBalance(cadBalance);
   };
 
   const createNewWallet = async () => {
@@ -57,7 +60,7 @@ const Wallet = () => {
     <div className="wallet">
       {wallet ? (
         <>
-          <Balance bal={balance} />
+          <Balance bal={balance} cadBalance={cadBalance} />
           <div className="transfer">
             <Receive
               cashAddress={parsedWallet.cashAddress}
