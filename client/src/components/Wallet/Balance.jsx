@@ -1,13 +1,12 @@
-export default function Balance() {
-  const balanceBCH = 0.5454;
+export default function Balance(props) {
   const balanceCAD = 446.44;
 
   return (
-    <div class="balance">
+    <div className="balance">
       <h1> BALANCE </h1>
       <h2>
         BCH:
-        <span> {balanceBCH} </span>
+        <span> {props.bal} Satoshi's </span>
       </h2>
       <h2>
         CAD:
