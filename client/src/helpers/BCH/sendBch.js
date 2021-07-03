@@ -1,49 +1,37 @@
 import bchjs from "./network";
+import { walletInfo } from "./walletInfo";
 
 // Replace the address below with the address you want to send the BCH to.
-let RECV_ADDR = "";
+let RECV_ADDR = "user input as bitcoincash:xxxxxxxxxxx here";
 // set satoshi amount to send
-const SATOSHIS_TO_SEND = 1000;
+const SATOSHIS_TO_SEND = "user input as num here";
 
 async function sendBch(cashAddr, seed) {
-  const SEND_ADDR = cashAddr;
-  const SEND_MNEMONIC = seed;
   try {
     // Get the balance of the sending address.
-    const balance = await getBCHBalance(SEND_ADDR, false);
-    console.log(`balance: ${JSON.stringify(balance, null, 2)}`);
-    console.log(`Balance of sending address ${SEND_ADDR} is ${balance} BCH.`);
+    const fullBalance = await walletInfo(cashAddr);
+    console.log(
+      `Balance of sending address ${cashAddr} is ${fullBalance.balance} BCH.`
+    );
 
     // Exit if the balance is zero.
-    if (balance <= 0.0) {
+    if (fullBalance.balance <= 0.0) {
       console.log("Balance of sending address is zero. Exiting.");
       process.exit(0);
     }
 
     // If the user fails to specify a reciever address, just send the BCH back
     // to the origination address, so the example doesn't fail.
-    if (RECV_ADDR === "") RECV_ADDR = SEND_ADDR;
-
-    // Convert to a legacy address (needed to build transactions).
-    const SEND_ADDR_LEGACY = bchjs.Address.toLegacyAddress(SEND_ADDR);
-    const RECV_ADDR_LEGACY = bchjs.Address.toLegacyAddress(RECV_ADDR);
-    console.log(`Sender Legacy Address: ${SEND_ADDR_LEGACY}`);
-    console.log(`Receiver Legacy Address: ${RECV_ADDR_LEGACY}`);
+    if (RECV_ADDR === "") RECV_ADDR = cashAddr;
 
     // Get UTXOs held by the address.
     // https://github.com/Bitcoin-com/mastering-bitcoin-cash/blob/master/4-transactions.md
-    const utxos = await bchjs.Electrumx.utxo(SEND_ADDR);
-    // console.log(`utxos: ${JSON.stringify(utxos, null, 2)}`);
-
+    const utxos = await bchjs.Electrumx.utxo(cashAddr);
     if (utxos.utxos.length === 0) throw new Error("No UTXOs found.");
-
-    // console.log(`u: ${JSON.stringify(u, null, 2)}`
     const utxo = await findBiggestUtxo(utxos.utxos);
-    // console.log(`utxo: ${JSON.stringify(utxo, null, 2)}`);
 
     // instance of transaction builder
     let transactionBuilder = new bchjs.TransactionBuilder();
-
     // Essential variables of a transaction.
     const satoshisToSend = SATOSHIS_TO_SEND;
     const originalAmount = utxo.value;
@@ -58,25 +46,22 @@ async function sendBch(cashAddr, seed) {
       { P2PKH: 1 },
       { P2PKH: 2 }
     );
-    console.log(`Transaction byte count: ${byteCount}`);
     const satoshisPerByte = 1.2;
     const txFee = Math.floor(satoshisPerByte * byteCount);
-    console.log(`Transaction fee: ${txFee}`);
 
     // amount to send back to the sending address.
     // It's the original amount - 1 sat/byte for tx size
     const remainder = originalAmount - satoshisToSend - txFee;
-
     if (remainder < 0) {
       throw new Error("Not enough BCH to complete transaction!");
     }
 
     // add output w/ address and amount to send
     transactionBuilder.addOutput(RECV_ADDR, satoshisToSend);
-    transactionBuilder.addOutput(SEND_ADDR, remainder);
+    transactionBuilder.addOutput(cashAddr, remainder);
 
     // Generate a change address from a Mnemonic of a private key.
-    const change = await changeAddrFromMnemonic(SEND_MNEMONIC);
+    const change = await changeAddrFromMnemonic(seed);
 
     // Generate a keypair from the change address.
     const keyPair = bchjs.HDNode.toKeyPair(change);
@@ -96,7 +81,6 @@ async function sendBch(cashAddr, seed) {
     // output rawhex
     const hex = tx.toHex();
     // console.log(`TX hex: ${hex}`);
-    console.log(" ");
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex]);
@@ -112,9 +96,9 @@ async function sendBch(cashAddr, seed) {
 sendBch();
 
 // Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic(mnemonic) {
+async function changeAddrFromMnemonic(seed) {
   // root seed buffer
-  const rootSeed = await bchjs.Mnemonic.toSeed(mnemonic);
+  const rootSeed = await bchjs.Mnemonic.toSeed(seed);
   // master HDNode
   let masterHDNode = bchjs.HDNode.fromSeed(rootSeed);
   // HDNode of BIP44 account
@@ -123,28 +107,6 @@ async function changeAddrFromMnemonic(mnemonic) {
   // derive the first external change address HDNode which is going to spend utxo
   const change = bchjs.HDNode.derivePath(account, "0/0");
   return change;
-}
-
-// Get the balance in BCH of a BCH address.
-async function getBCHBalance(addr, verbose) {
-  try {
-    const result = await bchjs.Electrumx.balance(addr);
-
-    if (verbose) console.log(result);
-
-    // The total balance is the sum of the confirmed and unconfirmed balances.
-    const satBalance =
-      Number(result.balance.confirmed) + Number(result.balance.unconfirmed);
-
-    // Convert the satoshi balance to a BCH balance
-    const bchBalance = bchjs.BitcoinCash.toBitcoinCash(satBalance);
-
-    return bchBalance;
-  } catch (err) {
-    console.error("Error in getBCHBalance: ", err);
-    console.log(`addr: ${addr}`);
-    throw err;
-  }
 }
 
 // Returns the utxo with the biggest balance from an array of utxos.
