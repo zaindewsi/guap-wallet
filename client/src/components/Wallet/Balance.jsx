@@ -1,6 +1,10 @@
 export default function Balance(props) {
-  const balanceCAD = 446.44;
-
+  const num = props.cadBalance;
+  let dollars = num / 100;
+  dollars = dollars.toLocaleString("en-US", {
+    style: "currency",
+    currency: "CAD",
+  });
   return (
     <div className="balance">
       <h1> BALANCE </h1>
@@ -9,8 +13,7 @@ export default function Balance(props) {
         <span> {props.bal} </span>
       </h2>
       <h2>
-        CAD:
-        <span> {balanceCAD} </span>
+        <span> {dollars} </span>
       </h2>
     </div>
   );
