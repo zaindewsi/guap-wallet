@@ -14,6 +14,7 @@ const Wallet = () => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
   const [cadBalance, setCadBalance] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (wallet) {
@@ -22,7 +23,7 @@ const Wallet = () => {
       getBalance();
       const interval = setInterval(() => {
         getBalance();
-      }, 30000);
+      }, 60000);
       return () => clearInterval(interval);
     }
 
@@ -30,12 +31,13 @@ const Wallet = () => {
   }, [wallet]);
 
   const getBalance = async () => {
+    setLoading(true);
     const currentBalance = await walletInfo(parsedWallet.cashAddress);
-    const tokenBalance = currentBalance.tokens;
+    // const tokenBalance = currentBalance.tokens;
     const cadBalance = currentBalance.cadBalanceCents;
-    console.log(cadBalance);
     setBalance(currentBalance.balance);
     setCadBalance(cadBalance);
+    setLoading(false);
   };
 
   const createNewWallet = async () => {
@@ -43,9 +45,9 @@ const Wallet = () => {
     setWallet(JSON.stringify(newWallet));
   };
 
-  const restoreExistingWallet = async (seed) => {
+  const restoreExistingWallet = async seed => {
     const existingWallet = await restoreWallet(seed);
-    console.log(existingWallet);
+    // console.log(existingWallet);
     setWallet(JSON.stringify(existingWallet));
   };
 
@@ -60,7 +62,12 @@ const Wallet = () => {
     <div className="wallet">
       {wallet ? (
         <>
-          <Balance bal={balance} cadBalance={cadBalance} />
+          <Balance
+            bal={balance}
+            cadBalance={cadBalance}
+            loading={loading}
+            refresh={getBalance}
+          />
           <div className="transfer">
             <Receive
               cashAddress={parsedWallet.cashAddress}
@@ -73,7 +80,7 @@ const Wallet = () => {
       ) : (
         <>
           <NewWallet onClick={createNewWallet} />
-          <RestoreWallet onSubmit={(seed) => restoreExistingWallet(seed)} />
+          <RestoreWallet onSubmit={seed => restoreExistingWallet(seed)} />
         </>
       )}
     </div>
