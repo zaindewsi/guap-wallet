@@ -15,31 +15,40 @@ const Wallet = () => {
   const [balance, setBalance] = useState(0);
 
   useEffect(() => {
-    wallet && localStorage.setItem("Wallet", wallet);
+    if (wallet) {
+      localStorage.setItem("Wallet", wallet);
+
+      getBalance();
+      const interval = setInterval(() => {
+        getBalance();
+      }, 30000);
+      return () => clearInterval(interval);
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      getBalance();
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
+  const getBalance = async () => {
+    const currentBalance = await walletInfo(parsedWallet.cashAddress);
+    console.log(currentBalance);
+    const tokenBalance = currentBalance.tokens;
+    setBalance(currentBalance.balance);
+  };
 
   const createNewWallet = async () => {
     const newWallet = await createWallet();
     setWallet(JSON.stringify(newWallet));
   };
 
+  const restoreExistingWallet = async (seed) => {
+    const existingWallet = await restoreWallet(seed);
+    console.log(existingWallet);
+    setWallet(JSON.stringify(existingWallet));
+  };
+
   const clearStorage = () => {
     localStorage.removeItem("Wallet");
     setWallet(false);
-  };
-
-  const getBalance = async () => {
-    const currentBalance = await walletInfo(parsedWallet.cashAddress);
-    const totalBalance =
-      currentBalance.balance.confirmed + currentBalance.balance.unconfirmed;
-    setBalance(totalBalance);
   };
 
   const parsedWallet = JSON.parse(wallet);
@@ -61,7 +70,7 @@ const Wallet = () => {
       ) : (
         <>
           <NewWallet onClick={createNewWallet} />
-          <RestoreWallet />
+          <RestoreWallet onSubmit={(seed) => restoreExistingWallet(seed)} />
         </>
       )}
     </div>

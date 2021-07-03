@@ -6,7 +6,7 @@ export default function Balance(props) {
       <h1> BALANCE </h1>
       <h2>
         BCH:
-        <span> {props.bal} Satoshi's </span>
+        <span> {props.bal} </span>
       </h2>
       <h2>
         CAD:

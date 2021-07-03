@@ -7,7 +7,11 @@ export const walletInfo = async (cashAddr) => {
     const slpAddress = bchjs.SLP.Address.toSLPAddress(cashAddr);
     // first get BCH balance
     const balance = await bchjs.Electrumx.balance(cashAddr);
-    outObj.balance = balance.balance;
+    const satBalance =
+      Number(balance.balance.confirmed) + Number(balance.balance.unconfirmed);
+    const bchBalance = bchjs.BitcoinCash.toBitcoinCash(satBalance);
+    outObj.satBalance = satBalance;
+    outObj.balance = bchBalance;
     // get token balances
     try {
       const tokens = await bchjs.SLP.Utils.balancesForAddress(slpAddress);
