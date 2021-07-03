@@ -7,6 +7,16 @@ export default function Balance(props) {
     style: "currency",
     currency: "CAD",
   });
+
+  const TokenList = () => {
+    const list = props.tokenList.map((name) => {
+      console.log(name);
+      return <li key={name}>{name}</li>;
+    });
+
+    return list;
+  };
+
   return (
     <div className="balance">
       <h1> BALANCE </h1>
@@ -18,6 +28,13 @@ export default function Balance(props) {
           <h2>
             BCH:
             <span> {props.bal} </span>
+          </h2>
+          <h2>
+            TOKENS:
+            <span> {props.token} </span>
+            <ul>
+              <TokenList />
+            </ul>
           </h2>
           <h2>
             <span> {dollars} </span>

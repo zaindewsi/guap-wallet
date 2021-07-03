@@ -7,6 +7,8 @@ import { useEffect, useState } from "react";
 import { createWallet } from "../../helpers/BCH/createWallet";
 import { walletInfo } from "../../helpers/BCH/walletInfo";
 import { restoreWallet } from "../../helpers/BCH/restoreWallet";
+import { sendBch } from "../../helpers/BCH/sendBch";
+import { lookupToken } from "../../helpers/BCH/lookupToken";
 
 import "./Wallet.scss";
 
@@ -15,6 +17,8 @@ const Wallet = () => {
   const [balance, setBalance] = useState(0);
   const [cadBalance, setCadBalance] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [tknBalance, setTknBalance] = useState(0);
+  const [tknList, setTknList] = useState([]);
 
   useEffect(() => {
     if (wallet) {
@@ -30,10 +34,31 @@ const Wallet = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
+  const sendCoin = (recAddr, amount) => {
+    const cashAddr = parsedWallet.cashAddress;
+    const seed = parsedWallet.mnemonic;
+    sendBch(cashAddr, seed, recAddr, amount);
+    getBalance();
+  };
+
   const getBalance = async () => {
     setLoading(true);
     const currentBalance = await walletInfo(parsedWallet.cashAddress);
-    // const tokenBalance = currentBalance.tokens;
+    const tokenArr = currentBalance.tokens;
+    const tokenBalance = tokenArr.length;
+
+    setTknBalance(tokenBalance);
+
+    const tokenArray = tokenArr.map((token) => {
+      lookupToken(token.tokenId).then((res) => {
+        setTknList([...tknList, res]);
+        console.log(tknList);
+      });
+    });
+
+    console.log("TOKEN ARRAY:", tokenArray);
+    // setTknList(tokenArray);
+    console.log("TOKEN LIST:", tknList);
     const cadBalance = currentBalance.cadBalanceCents;
     setBalance(currentBalance.balance);
     setCadBalance(cadBalance);
@@ -45,7 +70,7 @@ const Wallet = () => {
     setWallet(JSON.stringify(newWallet));
   };
 
-  const restoreExistingWallet = async seed => {
+  const restoreExistingWallet = async (seed) => {
     const existingWallet = await restoreWallet(seed);
     // console.log(existingWallet);
     setWallet(JSON.stringify(existingWallet));
@@ -65,22 +90,24 @@ const Wallet = () => {
           <Balance
             bal={balance}
             cadBalance={cadBalance}
+            token={tknBalance}
             loading={loading}
             refresh={getBalance}
+            tokenList={tknList}
           />
           <div className="transfer">
             <Receive
               cashAddress={parsedWallet.cashAddress}
               slpAddress={parsedWallet.slpAddress}
             />
-            <Send />
+            <Send onSubmit={(recAddr, amount) => sendCoin(recAddr, amount)} />
           </div>
           <button onClick={clearStorage}>Clear </button>
         </>
       ) : (
         <>
           <NewWallet onClick={createNewWallet} />
-          <RestoreWallet onSubmit={seed => restoreExistingWallet(seed)} />
+          <RestoreWallet onSubmit={(seed) => restoreExistingWallet(seed)} />
         </>
       )}
     </div>
