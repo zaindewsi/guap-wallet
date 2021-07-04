@@ -36,12 +36,10 @@ const Wallet = () => {
 
   const sendCoin = (recAddr, amount) => {
     const cashAddr = parsedWallet.cashAddress;
-    const seed = parsedWallet.mnemonic;
-    sendBch(cashAddr, seed, recAddr, amount);
+    sendBch(cashAddr, recAddr, amount);
     getBalance();
   };
 
-  
   const getBalance = async () => {
     const array = [];
     setLoading(true);
@@ -53,20 +51,16 @@ const Wallet = () => {
 
     tokenArr.forEach((token) => {
       lookupToken(token.tokenId).then((res) => {
-        array.push(res)
+        array.push(res);
         setTknList([...array]);
       });
     });
-
-    
 
     const cadBalance = currentBalance.cadBalanceCents;
     setBalance(currentBalance.balance);
     setCadBalance(cadBalance);
     setLoading(false);
   };
-  
-
 
   const createNewWallet = async () => {
     const newWallet = await createWallet();

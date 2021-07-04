@@ -1,10 +1,14 @@
 import bchjs from "./network";
 import { walletInfo } from "./walletInfo";
+import { changeAddrFromMnemonic } from "./changeAddrFromMnemonic";
+import { findBiggestUtxo } from "./findBiggestUtxo";
+import { transactionStatus } from "./util";
 
-export const sendBch = async (cashAddr, seed, RECV_ADDR, satoshisToSend) => {
+export const sendBch = async (cashAddr, RECV_ADDR, satoshisToSend) => {
   try {
     // Get the balance of the sending address.
     const fullBalance = await walletInfo(cashAddr);
+    const seed = fullBalance.mnemonic;
     console.log(
       `Balance of sending address ${cashAddr} is ${fullBalance.balance} BCH.`
     );
@@ -86,57 +90,10 @@ export const sendBch = async (cashAddr, seed, RECV_ADDR, satoshisToSend) => {
 
     // Broadcast transation to the network
     const txidStr = await bchjs.RawTransactions.sendRawTransaction([hex]);
-    // import from util.js file
-    const util = require("./util.js");
     console.log(`Transaction ID: ${txidStr}`);
     console.log("Check the status of your transaction on this block explorer:");
-    util.transactionStatus(txidStr, "mainnet");
+    transactionStatus(txidStr, "mainnet");
   } catch (err) {
     console.log("error: ", err);
   }
 };
-
-// Generate a change address from a Mnemonic of a private key.
-async function changeAddrFromMnemonic(seed) {
-  // root seed buffer
-  const rootSeed = await bchjs.Mnemonic.toSeed(seed);
-  // master HDNode
-  let masterHDNode = bchjs.HDNode.fromSeed(rootSeed);
-  // HDNode of BIP44 account
-  const account = bchjs.HDNode.derivePath(masterHDNode, "m/44'/245'/0'");
-
-  // derive the first external change address HDNode which is going to spend utxo
-  const change = bchjs.HDNode.derivePath(account, "0/0");
-  return change;
-}
-
-// Returns the utxo with the biggest balance from an array of utxos.
-async function findBiggestUtxo(utxos) {
-  let largestAmount = 0;
-  let largestIndex = 0;
-
-  for (var i = 0; i < utxos.length; i++) {
-    const thisUtxo = utxos[i];
-    // console.log(`thisUTXO: ${JSON.stringify(thisUtxo, null, 2)}`);
-
-    // Validate the UTXO data with the full node.
-    const txout = await bchjs.Blockchain.getTxOut(
-      thisUtxo.tx_hash,
-      thisUtxo.tx_pos
-    );
-    if (txout === null) {
-      // If the UTXO has already been spent, the full node will respond with null.
-      console.log(
-        "Stale UTXO found. You may need to wait for the indexer to catch up."
-      );
-      continue;
-    }
-
-    if (thisUtxo.value > largestAmount) {
-      largestAmount = thisUtxo.value;
-      largestIndex = i;
-    }
-  }
-
-  return utxos[largestIndex];
-}

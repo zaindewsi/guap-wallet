@@ -22,7 +22,7 @@ const Send = (props) => {
       <form>
         <input
           type="text"
-          placeholder="address"
+          placeholder="bitcoincash:"
           value={address}
           onChange={(event) => setAddress(event.target.value)}
         />
@@ -40,13 +40,13 @@ const Send = (props) => {
       <form>
         <input
           type="text"
-          placeholder="address"
+          placeholder="simpleledger:"
           value={address}
           onChange={(event) => setAddress(event.target.value)}
         />
         <input
           type="number"
-          placeholder="amount in BCH"
+          placeholder="amount of tokens"
           value={amount}
           onChange={(event) => setAmount(event.target.value)}
         />
