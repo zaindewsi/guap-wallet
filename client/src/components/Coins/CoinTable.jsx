@@ -42,7 +42,7 @@ export default function CoinItemList () {
       </thead>
       {coins.map((coin) => (
         <tbody>
-          <tr class="border-bottom"> 
+          <tr> 
             <td>{coin.market_cap_rank}</td>
             <td id="logo-name"><img className="coin-logo" src={coin.image} alt={coin.name}/> {coin.name}</td>
             <td>{formatter.format(coin.current_price)}</td>
