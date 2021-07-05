@@ -1,4 +1,4 @@
-import bchjs from "./network";
+/* import bchjs from "./network";
 
 export const lookupToken = async (TOKENID) => {
   try {
@@ -10,3 +10,4 @@ export const lookupToken = async (TOKENID) => {
     throw err;
   }
 };
+ */

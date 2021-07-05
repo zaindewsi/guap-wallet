@@ -2,6 +2,7 @@ import "./Body.scss";
 import Wallet from "./Wallet";
 import { Switch, Route } from "react-router-dom";
 import CoinTable from "./Coins/CoinTable";
+import Coin from "./Coins/Coin";
 
 const Body = () => {
   return (
@@ -12,6 +13,9 @@ const Body = () => {
         </Route>
         <Route exact path="/coins">
           <CoinTable />
+        </Route>
+        <Route exact path="/coins/1">
+          <Coin />
         </Route>
         <Route exact path="/about">
           <h1> About </h1>

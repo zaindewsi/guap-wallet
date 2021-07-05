@@ -3,30 +3,33 @@ import RestoreWallet from "./RestoreWallet";
 import Send from "./Send";
 import Balance from "./Balance";
 import Receive from "./Receive";
+import SlpWallet from "minimal-slp-wallet";
 import { useEffect, useState } from "react";
-import { createWallet } from "../../helpers/BCH/createWallet";
-import { walletInfo } from "../../helpers/BCH/walletInfo";
-import { restoreWallet } from "../../helpers/BCH/restoreWallet";
-import { sendBch } from "../../helpers/BCH/sendBch";
-import { lookupToken } from "../../helpers/BCH/lookupToken";
-
 import "./Wallet.scss";
+import CoinGecko from "coingecko-api";
 
 const Wallet = () => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
   const [cadBalance, setCadBalance] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [tknBalance, setTknBalance] = useState(0);
-  const [tknList, setTknList] = useState([]);
+  const [toggle, setToggle] = useState(false);
+  const [totalTokens, setTotalTokens] = useState(0);
+  const [listOfTokens, setListOfTokens] = useState({});
+
+  const CoinGeckoClient = new CoinGecko();
+
+  const handleChange = (checked) => {
+    toggle ? setToggle(false) : setToggle(true);
+  };
 
   useEffect(() => {
     if (wallet) {
       localStorage.setItem("Wallet", wallet);
 
-      getBalance();
+      retrieveBalance();
       const interval = setInterval(() => {
-        getBalance();
+        retrieveBalance();
       }, 60000);
       return () => clearInterval(interval);
     }
@@ -34,50 +37,97 @@ const Wallet = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
-  const sendCoin = (recAddr, amount) => {
-    const cashAddr = parsedWallet.cashAddress;
-    sendBch(cashAddr, recAddr, amount);
-    getBalance();
+  const parsedWallet = JSON.parse(wallet);
+
+  const sendCoin = async (address, amount) => {
+    const seed = parsedWallet.mnemonic;
+    const slpWallet = await restoreExistingWallet(seed);
+    // console.log(slpWallet);
+    // You can distribute funds to N users by simply extending the receiver array.
+    const receivers = [
+      {
+        address,
+        // amount in satoshis, 1 satoshi = 0.00000001 Bitcoin
+        amountSat: amount,
+      },
+    ];
+    const txid = await slpWallet.send(receivers);
+    console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    retrieveBalance();
   };
 
-  const getBalance = async () => {
-    const array = [];
+  const sendSlp = async (address, tokenId, tokenAmt) => {
+    const seed = parsedWallet.mnemonic;
+
+    const slpWallet = await restoreExistingWallet(seed);
+
+    const receiver = {
+      address,
+      tokenId,
+      qty: tokenAmt,
+    };
+    const txid = await slpWallet.sendTokens(receiver);
+    console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    retrieveBalance();
+  };
+
+  const retrieveBalance = async () => {
     setLoading(true);
-    const currentBalance = await walletInfo(parsedWallet.cashAddress);
-    const tokenArr = currentBalance.tokens;
-    const tokenBalance = tokenArr.length;
 
-    setTknBalance(tokenBalance);
+    const seed = parsedWallet.mnemonic;
 
-    tokenArr.forEach((token) => {
-      lookupToken(token.tokenId).then((res) => {
-        array.push(res);
-        setTknList([...array]);
-      });
+    const slpWallet = await restoreExistingWallet(seed);
+
+    const satoshis = await slpWallet.getBalance(slpWallet.walletInfo.address);
+    const bchBalance = satoshis / 100000000;
+    setBalance(bchBalance);
+
+    let data = await CoinGeckoClient.simple.price({
+      ids: ["bitcoin-cash"],
+      vs_currencies: ["cad"],
     });
 
-    const cadBalance = currentBalance.cadBalanceCents;
-    setBalance(currentBalance.balance);
-    setCadBalance(cadBalance);
+    const bchPrice = data.data["bitcoin-cash"]["cad"];
+    setCadBalance(bchPrice * bchBalance);
+
+    const tokens = await slpWallet.listTokens();
+    setTotalTokens(tokens.length);
+
+    const tokenList = {};
+    tokens.forEach((token) => {
+      tokenList[token.tokenId] = {
+        id: token.tokenId,
+        name: token.name,
+        value: token.qty,
+      };
+    });
+    setListOfTokens(tokenList);
+
     setLoading(false);
   };
 
   const createNewWallet = async () => {
-    const newWallet = await createWallet();
-    setWallet(JSON.stringify(newWallet));
+    const slpWallet = new SlpWallet();
+    await slpWallet.walletInfoPromise;
+    setWallet(JSON.stringify(slpWallet.walletInfo));
   };
 
   const restoreExistingWallet = async (seed) => {
-    const existingWallet = await restoreWallet(seed);
-    setWallet(JSON.stringify(existingWallet));
+    const options = {
+      apiToken: process.env.REACT_APP_BCHJSTOKEN,
+      fee: Number(process.env.REACT_APP_FEE),
+    };
+    const slpWallet = new SlpWallet(seed, options);
+    console.log(slpWallet);
+    await slpWallet.walletInfoPromise;
+    setWallet(JSON.stringify(slpWallet.walletInfo));
+    return slpWallet;
   };
 
   const clearStorage = () => {
     localStorage.removeItem("Wallet");
     setWallet(false);
   };
-
-  const parsedWallet = JSON.parse(wallet);
 
   return (
     <div className="wallet">
@@ -86,17 +136,27 @@ const Wallet = () => {
           <Balance
             bal={balance}
             cadBalance={cadBalance}
-            token={tknBalance}
+            token={totalTokens}
             loading={loading}
-            refresh={getBalance}
-            tokenList={tknList}
+            refresh={retrieveBalance}
+            tokens={listOfTokens}
+            toggle={toggle}
+            handleChange={handleChange}
           />
           <div className="transfer">
             <Receive
               cashAddress={parsedWallet.cashAddress}
               slpAddress={parsedWallet.slpAddress}
+              toggle={toggle}
             />
-            <Send onSubmit={(recAddr, amount) => sendCoin(recAddr, amount)} />
+            <Send
+              onBchSubmit={(recAddr, amount) => sendCoin(recAddr, amount)}
+              onSlpSubmit={(address, tokenId, tokenAmt) =>
+                sendSlp(address, tokenId, tokenAmt)
+              }
+              toggle={toggle}
+              tokens={listOfTokens}
+            />
           </div>
           <button onClick={clearStorage}>Clear </button>
         </>
