@@ -12,3 +12,12 @@
 body {
   background-color: #f0f1ef;
 }
+
+.theme-toggle {
+  display: flex;
+  justify-content: center;
+
+  position: absolute;
+  bottom: 5%;
+  left: 39%;
+}
