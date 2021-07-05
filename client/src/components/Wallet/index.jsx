@@ -26,14 +26,8 @@ const Wallet = () => {
   useEffect(() => {
     if (wallet) {
       localStorage.setItem("Wallet", wallet);
-
       retrieveBalance();
-      const interval = setInterval(() => {
-        retrieveBalance();
-      }, 60000);
-      return () => clearInterval(interval);
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
@@ -66,7 +60,7 @@ const Wallet = () => {
       tokenId,
       qty: tokenAmt,
     };
-    const txid = await slpWallet.sendTokens(receiver);
+    const txid = await slpWallet.sendTokens(receiver, 3.0);
     console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
     retrieveBalance();
   };
@@ -115,7 +109,6 @@ const Wallet = () => {
   const restoreExistingWallet = async (seed) => {
     const options = {
       apiToken: process.env.REACT_APP_BCHJSTOKEN,
-      fee: Number(process.env.REACT_APP_FEE),
     };
     const slpWallet = new SlpWallet(seed, options);
     console.log(slpWallet);
