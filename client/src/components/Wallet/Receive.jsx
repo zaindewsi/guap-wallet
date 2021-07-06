@@ -8,7 +8,14 @@ const Receive = (props) => {
         <FaWallet />
         Receive
       </h1>
-      <QRCode value={props.toggle ? props.slpAddress : props.cashAddress} />
+      <QRCode value={props.toggle ? props.slpAddress : props.cashAddress} onClick={() =>  {
+        if (props.toggle) {
+        navigator.clipboard.writeText(props.slpAddress)
+      } else {
+        navigator.clipboard.writeText(props.cashAddress)
+      }
+      }} 
+        />
       <p>{props.toggle ? props.slpAddress : props.cashAddress}</p>
     </div>
   );
