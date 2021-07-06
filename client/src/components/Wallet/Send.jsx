@@ -1,5 +1,5 @@
 import { useState } from "react";
-import QRReader from "../../helpers/qrReader";
+import QrReader from "react-qr-reader";
 import { ImQrcode } from "react-icons/im";
 
 const Send = (props) => {
@@ -7,7 +7,10 @@ const Send = (props) => {
   const [amount, setAmount] = useState(0);
   const [slpToken, setSlpToken] = useState("");
   const [tokenID, setTokenID] = useState("");
-  const [readQR, setReadQR] = useState("");
+  const [readQRBch, setReadQRBch] = useState("");
+  const [qrBch, setQrBch] = useState(false);
+  const [readQRSlp, setReadQRSlp] = useState("");
+  const [qrSlp, setQrSlp] = useState(false);
 
   const bchClick = (event) => {
     event.preventDefault();
@@ -46,9 +49,20 @@ const Send = (props) => {
     return list;
   };
 
-  const qrClick = () => {
-    setReadQR(<QRReader />);
-    return readQR;
+  const qrClickBch = () => {
+    !qrBch ? setQrBch(true) : setQrBch(false);
+  };
+  const qrClickSlp = () => {
+    !qrSlp ? setQrSlp(true) : setQrSlp(false);
+  };
+
+  const clearBch = () => {
+    setAddress("");
+    setReadQRBch("");
+  };
+  const clearSlp = () => {
+    setAddress("");
+    setReadQRSlp("");
   };
 
   return (
@@ -57,19 +71,42 @@ const Send = (props) => {
         <>
           <h1>Send BCH</h1>
           <form>
-            <input
-              type="text"
-              placeholder="bitcoincash:"
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-            />
-            <button
-              type="button"
-              onClick={() => (!readQR ? qrClick() : setReadQR(""))}
-            >
-              <ImQrcode />
-            </button>
-            {readQR}
+            <div style={{ display: "flex" }}>
+              <input
+                type="text"
+                placeholder="bitcoincash:"
+                value={readQRBch ? readQRBch : address}
+                onChange={(event) => {
+                  !readQRBch
+                    ? setAddress(event.target.value)
+                    : setAddress(readQRBch);
+                }}
+              />
+              <button type="button" onClick={qrClickBch}>
+                <ImQrcode />
+              </button>
+              <button type="button" onClick={clearBch}>
+                Clear
+              </button>
+            </div>
+            {qrBch && (
+              <>
+                <QrReader
+                  delay={300}
+                  onError={(err) => {
+                    console.error(err);
+                  }}
+                  onScan={(data) => {
+                    if (data) {
+                      setReadQRBch(data);
+                      setQrBch(false);
+                    }
+                  }}
+                  style={{ width: "100%" }}
+                />
+              </>
+            )}
+
             <input
               type="number"
               placeholder="amount in BCH"
@@ -85,12 +122,41 @@ const Send = (props) => {
         <>
           <h1>Send SLP</h1>
           <form>
-            <input
-              type="text"
-              placeholder="simpleledger:"
-              value={address}
-              onChange={(event) => setAddress(event.target.value)}
-            />
+            <div style={{ display: "flex" }}>
+              <input
+                type="text"
+                placeholder="simpleledger:"
+                value={readQRSlp ? readQRSlp : address}
+                onChange={(event) => {
+                  !readQRSlp
+                    ? setAddress(event.target.value)
+                    : setAddress(readQRSlp);
+                }}
+              />
+              <button type="button" onClick={qrClickSlp}>
+                <ImQrcode />
+              </button>
+              <button type="button" onClick={clearSlp}>
+                Clear
+              </button>
+            </div>
+            {qrSlp && (
+              <>
+                <QrReader
+                  delay={300}
+                  onError={(err) => {
+                    console.error(err);
+                  }}
+                  onScan={(data) => {
+                    if (data) {
+                      setReadQRSlp(data);
+                      setQrSlp(false);
+                    }
+                  }}
+                  style={{ width: "100%" }}
+                />
+              </>
+            )}
             <select
               name="token"
               value={slpToken}
