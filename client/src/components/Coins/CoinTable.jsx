@@ -40,7 +40,7 @@ export default function CoinItemList() {
         ids: searchId,
       });
     getCoinData().then((res) => setCoins(res.data));
-  }, [pageNumber, searchId, searchValue]);
+  }, [pageNumber, searchId, searchValue, orderBy]);
 
   useEffect(() => {
     const coinData = async () =>
@@ -102,21 +102,47 @@ export default function CoinItemList() {
         <thead>
           <tr>
             <th>
-              Rank <FaArrowsAltV />
+              Rank
+              <FaArrowsAltV
+                onClick={() => {
+                  orderBy === "market_cap_desc"
+                    ? setOrderBy("market_cap_asc")
+                    : setOrderBy("market_cap_desc");
+                }}
+              />
             </th>
             <th></th>
             <th>
-              Name <FaArrowsAltV />
+              Name
+              <FaArrowsAltV
+                onClick={() => {
+                  orderBy === "coin_name_asc"
+                    ? setOrderBy("coin_name_desc")
+                    : setOrderBy("coin_name_asc");
+                }}
+              />
             </th>
             <th>
-              Price <FaArrowsAltV />
+              Price
+              <FaArrowsAltV
+                onClick={() => {
+                  orderBy === "price_asc"
+                    ? setOrderBy("price_desc")
+                    : setOrderBy("price_asc");
+                }}
+              />
             </th>
             <th>
-              Market Cap <FaArrowsAltV />
+              Market Cap
+              <FaArrowsAltV
+                onClick={() => {
+                  orderBy === "market_cap_desc"
+                    ? setOrderBy("market_cap_asc")
+                    : setOrderBy("market_cap_desc");
+                }}
+              />
             </th>
-            <th>
-              24hr change <FaArrowsAltV />
-            </th>
+            <th>24hr change</th>
             <th>Watchlist</th>
           </tr>
         </thead>
