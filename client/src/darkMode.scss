@@ -1,0 +1,114 @@
+body.light-mode {
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode {
+  $dark-background: #131516;
+  $dark-border: #000;
+  $dark-text: #fff;
+  $neutral-text: #d8d4cf;
+  $selection-text: #e8e6e3;
+
+  transition: background-color 0.3s ease;
+
+  background-color: $dark-background;
+  color: #fff;
+
+  // SIDEBAR
+  .sidebar {
+    background-color: #131516;
+    border: 1px solid rgb(0, 0, 0);
+  }
+
+  // NAVBAR
+  .navbar {
+    background-color: #5664d2;
+  }
+
+  .settings-icon {
+    color: $selection-text;
+
+    &:hover {
+      color: white;
+      cursor: pointer;
+    }
+
+    &:active {
+      color: #7ed957;
+    }
+  }
+
+  //MENU ITEM LIST
+  .menu-item {
+    border-bottom: 1px solid #000;
+
+    &:hover {
+      color: white;
+    }
+
+    &:active {
+      background-color: #7ed957;
+    }
+  }
+  .menu-item-icon {
+    color: $selection-text;
+  }
+  .menu-item-title {
+    color: $selection-text;
+  }
+
+  // WALLET
+
+  .add-wallet {
+    border: 1px solid rgb(0, 0, 0);
+
+    background-color: $dark-background;
+  }
+
+  .send {
+    border: 1px solid #b8b8b8;
+    background-color: $dark-background;
+  }
+  .receive {
+    border: 1px solid #b8b8b8;
+    background-color: $dark-background;
+  }
+
+  .balance {
+    border: 1px solid rgb(0, 0, 0);
+    background-color: $dark-background;
+  }
+
+  .wallet {
+    background-color: $dark-background;
+  }
+
+  //COIN
+  .coin {
+    background-color: $dark-background;
+    border: 1px solid #b8b8b8;
+  }
+
+  //COIN TABLE
+  .coins-table {
+    border: 1px solid #b8b8b8;
+
+    background-color: $dark-background;
+  }
+
+  tr {
+    border: 1px solid rgb(0, 0, 0);
+
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  .star {
+    color: rgb(202, 202, 202);
+
+    &:hover {
+      color: orange;
+    }
+  }
+}

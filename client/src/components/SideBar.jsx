@@ -1,14 +1,14 @@
-import { useState } from "react";
-
+import useDarkMode from "use-dark-mode";
 import "./SideBar.scss";
 import Switch from "react-switch";
 import MenuItemList from "./MenuItemList";
 
 const SideBar = (props) => {
-  const [toggle, setToggle] = useState(false);
+  const darkMode = useDarkMode(false);
 
-  const handleChange = (checked) => {
-    toggle ? setToggle(false) : setToggle(true);
+  const handleChange = () => {
+    !darkMode.value ? darkMode.enable() : darkMode.disable();
+    console.log(darkMode);
   };
 
   return (
@@ -16,7 +16,7 @@ const SideBar = (props) => {
       <MenuItemList />
       <div className="theme-toggle">
         <Switch
-          checked={toggle}
+          checked={darkMode.value}
           onChange={handleChange}
           onColor="#7ED957"
           offColor="#5664D2"
