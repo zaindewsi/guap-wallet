@@ -1,10 +1,13 @@
 import { useState } from "react";
+import QRReader from "../../helpers/qrReader";
+import { ImQrcode } from "react-icons/im";
 
 const Send = (props) => {
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState(0);
   const [slpToken, setSlpToken] = useState("");
   const [tokenID, setTokenID] = useState("");
+  const [readQR, setReadQR] = useState("");
 
   const bchClick = (event) => {
     event.preventDefault();
@@ -43,6 +46,11 @@ const Send = (props) => {
     return list;
   };
 
+  const qrClick = () => {
+    setReadQR(<QRReader />);
+    return readQR;
+  };
+
   return (
     <div className="send">
       {!props.toggle ? (
@@ -55,6 +63,13 @@ const Send = (props) => {
               value={address}
               onChange={(event) => setAddress(event.target.value)}
             />
+            <button
+              type="button"
+              onClick={() => (!readQR ? qrClick() : setReadQR(""))}
+            >
+              <ImQrcode />
+            </button>
+            {readQR}
             <input
               type="number"
               placeholder="amount in BCH"
