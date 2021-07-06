@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import {
   LineChart,
@@ -14,15 +15,15 @@ import {
 export default function Coin() {
   const [coinData, setCoinData] = useState({});
   const [priceData, setPriceData] = useState([]);
-
+  const { id } = useParams();
   const fetchData = async () => {
     const data = await axios.get(
-      "https://api.coingecko.com/api/v3/coins/bitcoin"
+      `https://api.coingecko.com/api/v3/coins/${id}`
     );
     setCoinData(data.data);
 
     const graphData = await axios.get(
-      "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=cad&days=365&interval=daily"
+      `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=cad&days=365&interval=daily`
     );
     console.log(graphData.data.prices);
 

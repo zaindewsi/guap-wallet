@@ -14,7 +14,7 @@ const Body = () => {
         <Route exact path="/coins">
           <CoinTable />
         </Route>
-        <Route exact path="/coins/1">
+        <Route exact path="/coins/:id">
           <Coin />
         </Route>
         <Route exact path="/about">

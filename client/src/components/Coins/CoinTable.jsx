@@ -2,6 +2,7 @@ import CoinGecko from "coingecko-api";
 import { useEffect, useState } from "react";
 import "./CoinTable.scss";
 import { FaStar } from "react-icons/fa";
+import { useHistory } from "react-router-dom";
 
 export default function CoinItemList() {
   const CoinGeckoClient = new CoinGecko();
@@ -10,6 +11,12 @@ export default function CoinItemList() {
     style: "currency",
     currency: "CAD",
   });
+
+  const history = useHistory();
+  const handleRowClick = (coin) => {
+    history.push(`/coins/${coin.id}`);
+  }  
+
   const numColor = (num) => {
     if (num[0] === "-") {
       return <div style={{ color: "red" }}>{num}</div>;
@@ -40,7 +47,8 @@ export default function CoinItemList() {
       </thead>
       {coins.map((coin) => (
         <tbody>
-          <tr onClick={() => console.log(coin.name)}>
+          
+          <tr onClick={() => handleRowClick(coin)}>
             <td>{coin.market_cap_rank}</td>
             <td id="logo-name">
               <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
