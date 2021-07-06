@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import "./Coin.scss";
 import axios from "axios";
 import {
   LineChart,
@@ -15,6 +16,9 @@ import {
 export default function Coin() {
   const [coinData, setCoinData] = useState({});
   const [priceData, setPriceData] = useState([]);
+  const [dateRange, setDateRange] = useState("max");
+  const [range, setRange] = useState("daily");
+
   const { id } = useParams();
   const fetchData = async () => {
     const data = await axios.get(
@@ -23,21 +27,35 @@ export default function Coin() {
     setCoinData(data.data);
 
     const graphData = await axios.get(
-      `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=cad&days=365&interval=daily`
+      `https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=cad&days=${dateRange}&interval=${range}`
     );
-    console.log(graphData.data.prices);
 
     const prices = graphData.data.prices;
 
     const arr = [];
-    // console.log("OOOOOBJECT", Object.fromEntries(prices));
 
     prices.forEach((price) => {
-      arr.push({ date: new Date(price[0]).getHours(), value: price[1] });
+      if (dateRange === "max") {
+        arr.push({
+          date: new Date(price[0]).toLocaleDateString(),
+          price: price[1],
+        });
+      } else if (dateRange === "1") {
+        setRange("hourly");
+
+        arr.push({
+          date: new Date(price[0]).toLocaleTimeString(),
+          price: price[1],
+        });
+      } else {
+        arr.push({
+          date: new Date(price[0]).toLocaleDateString(),
+          price: price[1],
+        });
+      }
     });
 
     setPriceData(arr);
-    console.log(priceData);
   };
 
   // CONVERT TIMESTAMPS
@@ -47,16 +65,37 @@ export default function Coin() {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [dateRange, range]);
 
-  console.log("this is the new data from state", coinData);
+  const formatMoney = (val) => {
+    return `$${val}`;
+  };
 
   return (
-    <div>
+    <div className="coin">
       <h1>
         {coinData.id} ({coinData.symbol})
       </h1>
-      <ResponsiveContainer width={1100} height={300}>
+      <form>
+        <select
+          value={dateRange}
+          onChange={(event) => {
+            console.log(event.target);
+            setDateRange(event.target.value);
+          }}
+        >
+          <option name="max">max</option>
+          <option name="365">365</option>
+          <option name="30">30</option>
+          <option name="1">1</option>
+        </select>
+      </form>
+
+      <ResponsiveContainer
+        width={1000}
+        height={300}
+        className="graph-conatiner"
+      >
         <LineChart
           data={priceData}
           margin={{
@@ -66,17 +105,16 @@ export default function Coin() {
             bottom: 5,
           }}
         >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="date" />
-          <YAxis dataKey="value" />
+          <CartesianGrid strokeDasharray="1" />
+          <XAxis dataKey="date" tick="false" />
+          <YAxis
+            dataKey="price"
+            domain={["auto", "auto"]}
+            tickFormatter={formatMoney}
+          />
           <Tooltip />
           <Legend />
-          <Line
-            type="monotone"
-            dataKey="value"
-            stroke="#8884d8"
-            // activeDot={{ r: 8 }}
-          />
+          <Line type="monotone" dataKey="price" stroke="#8884d8" dot={false} />
         </LineChart>
       </ResponsiveContainer>
 
@@ -92,12 +130,9 @@ export default function Coin() {
       </p>
       <h1>{coinData.market_cap_rank}</h1>
       {coinData.image && <img src={coinData.image.large} alt={coinData.id} />}
-      {coinData.description && <p>{coinData.description.en} </p>}
+      {coinData.description && (
+        <p dangerouslySetInnerHTML={{ __html: coinData.description.en }} />
+      )}
     </div>
   );
 }
-
-// description
-// price
-// image large
-//
