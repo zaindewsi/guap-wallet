@@ -7,6 +7,7 @@ import { useHistory } from "react-router-dom";
 export default function CoinTable() {
   const CoinGeckoClient = new CoinGecko();
   const [coins, setCoins] = useState([]);
+  const [watchlist, setWatchlist] = useState([]);
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "CAD",
@@ -48,17 +49,17 @@ export default function CoinTable() {
       {coins.map((coin) => (
         <tbody>
           
-          <tr onClick={() => handleRowClick(coin)}>
+          <tr>
             <td>{coin.market_cap_rank}</td>
-            <td id="logo-name">
+            <td id="logo-name"  onClick={() => handleRowClick(coin)}>
               <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
             </td>
-            <td>
+            <td onClick={() => handleRowClick(coin)}>
               <p>{coin.name}</p>
             </td>
-            <td>{formatter.format(coin.current_price)}</td>
+            <td onClick={() => handleRowClick(coin)}>{formatter.format(coin.current_price)}</td>
             <td>{formatter.format(coin.market_cap)}</td>
-            <td>
+            <td onClick={() => handleRowClick(coin)}>
               {numColor(
                 Number(coin.price_change_percentage_24h / 100).toLocaleString(
                   undefined,
@@ -70,7 +71,11 @@ export default function CoinTable() {
               )}
             </td>
             <td>
+              <div onClick={() => {
+                console.log(coin.id)
+                }}>
               <FaStar className="star" />
+                </div>
             </td>
           </tr>
         </tbody>
