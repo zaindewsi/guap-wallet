@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import CoinTable from "./Coins/CoinTable";
 import Coin from "./Coins/Coin";
 import Settings from "./Settings";
-import Wishlist from "./watchlist"
+import Watchlist from "./../components/Watchlist.jsx";
 
 const Body = () => {
   return (
@@ -26,7 +26,7 @@ const Body = () => {
           <Settings />
         </Route>
         <Route exact path="/watchlist">
-          <Wishlist />
+          <Watchlist />
         </Route>
       </Switch>
     </div>
