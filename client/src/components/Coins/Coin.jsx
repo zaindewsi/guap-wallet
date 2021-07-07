@@ -58,11 +58,6 @@ export default function Coin() {
     setPriceData(arr);
   };
 
-  // CONVERT TIMESTAMPS
-  // const timestamp = 1622939369628;
-  // const date = new Date(timestamp);
-  // console.log("DATE", date.getMinutes());
-
   useEffect(() => {
     fetchData();
   }, [dateRange, range]);
@@ -80,7 +75,6 @@ export default function Coin() {
         <select
           value={dateRange}
           onChange={(event) => {
-            console.log(event.target);
             setDateRange(event.target.value);
           }}
         >

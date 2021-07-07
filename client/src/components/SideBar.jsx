@@ -8,7 +8,6 @@ const SideBar = (props) => {
 
   const handleChange = () => {
     !darkMode.value ? darkMode.enable() : darkMode.disable();
-    console.log(darkMode);
   };
 
   return (

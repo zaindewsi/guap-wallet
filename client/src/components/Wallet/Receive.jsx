@@ -16,7 +16,12 @@ const Receive = (props) => {
         <FaWallet />
         Receive
       </h1>
-      <QRCode value={props.toggle ? props.slpAddress : props.cashAddress} />
+      <QRCode
+        className="qr-canvas"
+        value={props.toggle ? props.slpAddress : props.cashAddress}
+        includeMargin="true"
+        size="150"
+      />
       <button onClick={copy}>
         <FaCopy />
       </button>

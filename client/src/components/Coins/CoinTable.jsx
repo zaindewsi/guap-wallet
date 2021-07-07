@@ -53,7 +53,12 @@ export default function CoinTable() {
     coinData().then((res) => setAllCoins(res.data));
   }, []);
 
-  // coins.forEach(coin = )
+  useEffect(() => {
+    if (watchlist) {
+      const myList = localStorage.getItem("Watchlist");
+      myList && setWatchlist(myList.split(","));
+    }
+  }, []);
 
   const getCoinId = (search) => {
     const shortSearch = search
@@ -66,7 +71,6 @@ export default function CoinTable() {
         shortSearch ===
         coin.name.replaceAll(" ", "").replaceAll("-", "").toLowerCase()
       ) {
-        console.log(coin.id);
         setSearchId(coin.id);
         setPageNumber(1);
         setButton(true);
@@ -75,6 +79,18 @@ export default function CoinTable() {
         setButton(false);
       }
     });
+  };
+
+  const addToWatchlist = (coin) => {
+    if (!watchlist.includes(coin.id)) {
+      let newWatchList = [...watchlist, coin.id];
+      setWatchlist([...watchlist, coin.id]);
+      localStorage.setItem("Watchlist", newWatchList);
+    } else {
+      const newWatchList = watchlist.filter((item) => item !== coin.id);
+      setWatchlist(newWatchList);
+      localStorage.setItem("Watchlist", newWatchList);
+    }
   };
 
   return (
@@ -88,17 +104,13 @@ export default function CoinTable() {
           }}
         />
       </form>
-      {/* {getCoinId()} */}
-      {pageNumber === 1 ? (
-        <button onClick={() => setPageNumber(pageNumber + 1)} disabled={button}>
-          Next
-        </button>
-      ) : (
-        <>
-          <button onClick={() => setPageNumber(pageNumber - 1)}>Prev</button>
-          <button onClick={() => setPageNumber(pageNumber + 1)}>Next</button>
-        </>
-      )}
+      <button
+        disabled={pageNumber === 1 ? true : false}
+        onClick={() => setPageNumber(pageNumber - 1)}
+      >
+        Prev
+      </button>
+      <button onClick={() => setPageNumber(pageNumber + 1)}>Next</button>
       <table className="coins-table">
         <thead>
           <tr>
@@ -149,17 +161,23 @@ export default function CoinTable() {
         </thead>
         {coins.map((coin) => (
           <tbody>
-            <tr onClick={() => handleRowClick(coin)}>
-              <td>{coin.market_cap_rank}</td>
-              <td id="logo-name">
+            <tr>
+              <td onClick={() => handleRowClick(coin)}>
+                {coin.market_cap_rank}
+              </td>
+              <td id="logo-name" onClick={() => handleRowClick(coin)}>
                 <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
               </td>
-              <td>
+              <td onClick={() => handleRowClick(coin)}>
                 <p>{coin.name}</p>
               </td>
-              <td>{formatter.format(coin.current_price)}</td>
-              <td>{formatter.format(coin.market_cap)}</td>
-              <td>
+              <td onClick={() => handleRowClick(coin)}>
+                {formatter.format(coin.current_price)}
+              </td>
+              <td onClick={() => handleRowClick(coin)}>
+                {formatter.format(coin.market_cap)}
+              </td>
+              <td onClick={() => handleRowClick(coin)}>
                 {numColor(
                   Number(coin.price_change_percentage_24h / 100).toLocaleString(
                     undefined,
@@ -170,8 +188,15 @@ export default function CoinTable() {
                   )
                 )}
               </td>
-              <td>
-                <FaStar className="star" />
+              <td onClick={() => addToWatchlist(coin)}>
+                <FaStar
+                  className="star"
+                  style={
+                    watchlist.includes(coin.id)
+                      ? { color: "orange" }
+                      : { color: "rgb(202, 202, 202)" }
+                  }
+                />
               </td>
             </tr>
           </tbody>

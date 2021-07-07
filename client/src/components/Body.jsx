@@ -1,31 +1,35 @@
 import "./Body.scss";
 import Wallet from "./Wallet";
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import CoinTable from "./Coins/CoinTable";
 import Coin from "./Coins/Coin";
 import Settings from "./Settings";
+import AboutUs from "./AboutUs";
 import Watchlist from "./../components/Watchlist.jsx";
 
 const Body = () => {
   return (
     <div className="body">
       <Switch>
-        <Route path="/wallet" exact>
+        <Route exact path="/">
+          <Redirect to="/wallet" />
+        </Route>
+        <Route path="/wallet">
           <Wallet />
         </Route>
         <Route exact path="/coins">
           <CoinTable />
         </Route>
-        <Route exact path="/coins/:id">
+        <Route path="/coins/:id">
           <Coin />
         </Route>
-        <Route exact path="/about">
-          <h1> About </h1>
+        <Route path="/about">
+          <AboutUs />
         </Route>
-        <Route exact path="/settings">
+        <Route path="/settings">
           <Settings />
         </Route>
-        <Route exact path="/watchlist">
+        <Route path="/watchlist">
           <Watchlist />
         </Route>
       </Switch>

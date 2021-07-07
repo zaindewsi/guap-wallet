@@ -4,7 +4,7 @@ import Switch from "react-switch";
 export default function Balance(props) {
   const dollars = props.cadBalance.toLocaleString("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: props.currency,
   });
 
   const TokenList = () => {
@@ -45,6 +45,7 @@ export default function Balance(props) {
         <p>SLP</p>
       </div>
       <h1> BALANCE </h1>
+      {props.denominations}
       {props.loading ? (
         <img className="status-image" src={Status} alt="loading" />
       ) : (

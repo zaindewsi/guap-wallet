@@ -11,7 +11,11 @@ import CoinGecko from "coingecko-api";
 const Wallet = () => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
+
+  const [varBalance, setVarBalance] = useState("cad");
+
   const [cadBalance, setCadBalance] = useState(0);
+
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [totalTokens, setTotalTokens] = useState(0);
@@ -29,19 +33,16 @@ const Wallet = () => {
       retrieveBalance();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallet]);
+  }, [wallet, varBalance]);
 
   const parsedWallet = JSON.parse(wallet);
 
   const sendCoin = async (address, amount) => {
     const seed = parsedWallet.mnemonic;
     const slpWallet = await restoreExistingWallet(seed);
-    // console.log(slpWallet);
-    // You can distribute funds to N users by simply extending the receiver array.
     const receivers = [
       {
         address,
-        // amount in satoshis, 1 satoshi = 0.00000001 Bitcoin
         amountSat: amount,
       },
     ];
@@ -78,11 +79,12 @@ const Wallet = () => {
 
     let data = await CoinGeckoClient.simple.price({
       ids: ["bitcoin-cash"],
-      vs_currencies: ["cad"],
+      vs_currencies: [varBalance],
     });
 
-    const bchPrice = data.data["bitcoin-cash"]["cad"];
-    setCadBalance(bchPrice * bchBalance);
+    const currency = (code) => data.data["bitcoin-cash"][code];
+
+    setCadBalance(currency(varBalance) * bchBalance);
 
     const tokens = await slpWallet.listTokens();
     setTotalTokens(tokens.length);
@@ -111,7 +113,6 @@ const Wallet = () => {
       apiToken: process.env.REACT_APP_BCHJSTOKEN,
     };
     const slpWallet = new SlpWallet(seed, options);
-    console.log(slpWallet);
     await slpWallet.walletInfoPromise;
     setWallet(JSON.stringify(slpWallet.walletInfo));
     return slpWallet;
@@ -122,6 +123,25 @@ const Wallet = () => {
     setWallet(false);
   };
 
+  const DenomSelector = () => {
+    return (
+      <select
+        value={varBalance}
+        onChange={(event) => {
+          setVarBalance(event.target.value);
+        }}
+        disabled={loading ? true : false}
+      >
+        <option>cad</option>
+        <option>usd</option>
+        <option>eur</option>
+        <option>gbp</option>
+        <option>aud</option>
+        <option>chf</option>
+      </select>
+    );
+  };
+
   return (
     <div className="wallet">
       {wallet ? (
@@ -129,12 +149,14 @@ const Wallet = () => {
           <Balance
             bal={balance}
             cadBalance={cadBalance}
+            currency={varBalance}
             token={totalTokens}
             loading={loading}
             refresh={retrieveBalance}
             tokens={listOfTokens}
             toggle={toggle}
             handleChange={handleChange}
+            denominations={DenomSelector()}
           />
           <div className="transfer">
             <Receive
@@ -149,6 +171,7 @@ const Wallet = () => {
               }
               toggle={toggle}
               tokens={listOfTokens}
+              denomination={varBalance}
             />
           </div>
           <button onClick={clearStorage}>Clear </button>

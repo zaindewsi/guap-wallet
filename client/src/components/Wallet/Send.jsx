@@ -1,16 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import QrReader from "react-qr-reader";
 import { ImQrcode } from "react-icons/im";
+import CoinGecko from "coingecko-api";
 
 const Send = (props) => {
+  const CoinGeckoClient = new CoinGecko();
   const [address, setAddress] = useState("");
-  const [amount, setAmount] = useState(0);
+  const [amount, setAmount] = useState("");
+  const [convertedAmount, setConvertedAmount] = useState("");
   const [slpToken, setSlpToken] = useState("");
   const [tokenID, setTokenID] = useState("");
   const [readQRBch, setReadQRBch] = useState("");
   const [qrBch, setQrBch] = useState(false);
   const [readQRSlp, setReadQRSlp] = useState("");
   const [qrSlp, setQrSlp] = useState(false);
+
+  const [isSatoshi, setIsSatoshi] = useState(true);
 
   const bchClick = (event) => {
     event.preventDefault();
@@ -65,6 +70,35 @@ const Send = (props) => {
     setReadQRSlp("");
   };
 
+  const convertFiat = async (e) => {
+    setAmount(e.target.value);
+
+    let data = await CoinGeckoClient.simple.price({
+      ids: ["bitcoin-cash"],
+      vs_currencies: [props.denomination],
+    });
+
+    const convertedFiat = (
+      e.target.value / data.data["bitcoin-cash"][props.denomination]
+    ).toFixed(8);
+
+    setConvertedAmount(convertedFiat);
+  };
+
+  const convertToFiat = async (e) => {
+    setAmount(e.target.value);
+
+    let data = await CoinGeckoClient.simple.price({
+      ids: ["bitcoin-cash"],
+      vs_currencies: [props.denomination],
+    });
+
+    const convertedFiat =
+      e.target.value * data.data["bitcoin-cash"][props.denomination];
+
+    setConvertedAmount(convertedFiat);
+  };
+
   return (
     <div className="send">
       {!props.toggle ? (
@@ -106,12 +140,27 @@ const Send = (props) => {
                 />
               </>
             )}
-
             <input
               type="number"
-              placeholder="amount in BCH"
+              placeholder={isSatoshi ? "amount in Satoshis" : "amount in BCH"}
+              value={convertedAmount}
+              onChange={(event) => convertToFiat(event)}
+            />
+            {isSatoshi ? (
+              <button type="button" onClick={() => setIsSatoshi(false)}>
+                Satoshi
+              </button>
+            ) : (
+              <button type="button" onClick={() => setIsSatoshi(true)}>
+                BCH
+              </button>
+            )}
+            OR
+            <input
+              type="number"
+              placeholder={`Amount in ${props.denomination.toUpperCase()}`}
               value={amount}
-              onChange={(event) => setAmount(event.target.value)}
+              onChange={(event) => convertFiat(event)}
             />
             <button type="submit" onClick={bchClick}>
               Submit
@@ -161,7 +210,6 @@ const Send = (props) => {
               name="token"
               value={slpToken}
               onChange={(event) => {
-                console.log("id", event.target[event.target.selectedIndex].id);
                 setTokenID(event.target[event.target.selectedIndex].id);
                 setSlpToken(event.target.value);
               }}
