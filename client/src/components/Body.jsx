@@ -4,7 +4,7 @@ import { Switch, Route } from "react-router-dom";
 import CoinTable from "./Coins/CoinTable";
 import Coin from "./Coins/Coin";
 import Settings from "./Settings";
-import Watchlist from "./../components/Watchlist.jsx";
+import Watchlist from "./Watchlist";
 
 const Body = () => {
   return (
