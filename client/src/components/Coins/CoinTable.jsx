@@ -4,7 +4,7 @@ import "./CoinTable.scss";
 import { FaStar } from "react-icons/fa";
 import { useHistory } from "react-router-dom";
 
-export default function CoinItemList() {
+export default function CoinTable() {
   const CoinGeckoClient = new CoinGecko();
   const [coins, setCoins] = useState([]);
   const formatter = new Intl.NumberFormat("en-US", {
