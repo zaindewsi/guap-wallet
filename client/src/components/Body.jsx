@@ -3,6 +3,7 @@ import Wallet from "./Wallet";
 import { Switch, Route } from "react-router-dom";
 import CoinTable from "./Coins/CoinTable";
 import Coin from "./Coins/Coin";
+import Settings from "./Settings";
 
 const Body = () => {
   return (
@@ -19,6 +20,9 @@ const Body = () => {
         </Route>
         <Route exact path="/about">
           <h1> About </h1>
+        </Route>
+        <Route exact path="/settings">
+          <Settings />
         </Route>
       </Switch>
     </div>
