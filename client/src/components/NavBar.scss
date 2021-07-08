@@ -1,14 +1,13 @@
 .navbar {
   display: flex;
   justify-content: space-between;
-  width: 100vw;
-  min-height: 6vh;
   align-items: center;
   background-color: #5664d2;
-  position: fixed;
-  z-index: 2;
+  position: sticky;
   top: 0;
-  left: 0;
+  z-index: 2;
+  min-height: 75px;
+  max-height: 75px;
 }
 
 .logo {

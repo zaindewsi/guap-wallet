@@ -1,12 +1,12 @@
 .sidebar {
-  height: 94vh;
-  position: fixed;
-  width: 15%;
-  margin-top: 6vh;
   background-color: rgb(255, 255, 255);
   border: 1px solid #b8b8b8;
-  top: 0;
-  left: 0;
+  position: sticky;
+  top: 75px;
+  bottom: 0;
+  z-index: 1;
+  width: 15%;
+  position: fixed;
 }
 
 body {
