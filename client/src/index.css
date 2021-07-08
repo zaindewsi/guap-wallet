@@ -5,3 +5,12 @@
 table {
   border-spacing: none;
 }
+
+.main-body {
+  display: flex;
+  justify-content: space-between;
+}
+
+body {
+  margin: 0;
+}

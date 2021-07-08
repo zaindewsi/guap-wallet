@@ -1,25 +1,12 @@
 import Status from "../../images/status.png";
 import Switch from "react-switch";
+import Tokens from "./Tokens";
 
 export default function Balance(props) {
   const dollars = props.cadBalance.toLocaleString("en-US", {
     style: "currency",
     currency: props.currency,
   });
-
-  const TokenList = () => {
-    const tokenIds = Object.keys(props.tokens);
-
-    const list = tokenIds.map((token) => {
-      return (
-        <li key={token}>
-          {props.tokens[token].name} :{props.tokens[token].value}
-        </li>
-      );
-    });
-
-    return list;
-  };
 
   return (
     <div className="balance">
@@ -45,7 +32,7 @@ export default function Balance(props) {
         <p>SLP</p>
       </div>
       <h1> BALANCE </h1>
-      {props.denominations}
+      <div>{props.denominations}</div>
       {props.loading ? (
         <img className="status-image" src={Status} alt="loading" />
       ) : (
@@ -60,9 +47,7 @@ export default function Balance(props) {
             <h2>
               TOKENS:
               <span> {props.token} </span>
-              <ul>
-                <TokenList />
-              </ul>
+              <Tokens tokens={props.tokens} />
             </h2>
           )}
         </>

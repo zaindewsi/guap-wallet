@@ -9,6 +9,7 @@ function App(props) {
     <>
       <Router>
         <NavBar />
+
         {props.sidebar()}
         <Body />
       </Router>

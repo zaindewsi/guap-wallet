@@ -1,7 +1,8 @@
 import CoinGecko from "coingecko-api";
 import { useEffect, useState } from "react";
 import "./CoinTable.scss";
-import { FaStar, FaArrowsAltV } from "react-icons/fa";
+import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
+import { TiArrowUnsorted } from "react-icons/ti";
 import { useHistory } from "react-router-dom";
 
 export default function CoinTable() {
@@ -14,10 +15,11 @@ export default function CoinTable() {
   const [allCoins, setAllCoins] = useState([]);
   const [button, setButton] = useState(false);
   const [orderBy, setOrderBy] = useState("market_cap_desc");
+  const [varBalance, setVarBalance] = useState("cad");
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: varBalance,
   });
 
   const history = useHistory();
@@ -36,18 +38,37 @@ export default function CoinTable() {
       await CoinGeckoClient.coins.markets({
         order: orderBy,
         per_page: 50,
-        vs_currency: "cad",
+        vs_currency: varBalance,
         page: pageNumber,
         ids: searchId,
       });
     getCoinData().then((res) => setCoins(res.data));
-  }, [pageNumber, searchId, searchValue, orderBy]);
+  }, [pageNumber, searchId, searchValue, orderBy, varBalance]);
+
+  const DenomSelector = () => {
+    return (
+      <select
+        value={varBalance}
+        onChange={(event) => {
+          setVarBalance(event.target.value);
+        }}
+        className="denom"
+      >
+        <option>cad</option>
+        <option>usd</option>
+        <option>eur</option>
+        <option>gbp</option>
+        <option>aud</option>
+        <option>chf</option>
+      </select>
+    );
+  };
 
   useEffect(() => {
     const coinData = async () =>
       await CoinGeckoClient.coins.markets({
         order: "market_cap_desc",
-        vs_currency: "cad",
+        vs_currency: varBalance,
         per_page: 250,
       });
     coinData().then((res) => setAllCoins(res.data));
@@ -95,28 +116,46 @@ export default function CoinTable() {
 
   return (
     <>
-      <form>
-        <input
-          value={searchValue}
-          onChange={(event) => {
-            setSearchValue(event.target.value);
-            getCoinId(event.target.value);
-          }}
-        />
-      </form>
-      <button
-        disabled={pageNumber === 1 ? true : false}
-        onClick={() => setPageNumber(pageNumber - 1)}
-      >
-        Prev
-      </button>
-      <button onClick={() => setPageNumber(pageNumber + 1)}>Next</button>
+      <div className="top-section">
+        <div className="search-section">
+          <DenomSelector />
+          <form>
+            <input
+              value={searchValue}
+              placeholder="🔍 Search Coin"
+              onChange={(event) => {
+                setSearchValue(event.target.value);
+                getCoinId(event.target.value);
+              }}
+              className="coin-search"
+            />
+          </form>
+        </div>
+
+        <div className="arrow-buttons">
+          <button
+            disabled={pageNumber === 1 ? true : false}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="page-arrow"
+          >
+            <FaAngleLeft />
+          </button>
+          <button
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="page-arrow"
+          >
+            <FaAngleRight />
+          </button>
+        </div>
+      </div>
+
       <table className="coins-table">
         <thead>
-          <tr>
+          <tr className="coins-header">
             <th>
               Rank
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "market_cap_desc"
                     ? setOrderBy("market_cap_asc")
@@ -125,19 +164,11 @@ export default function CoinTable() {
               />
             </th>
             <th></th>
-            <th>
-              Name
-              <FaArrowsAltV
-                onClick={() => {
-                  orderBy === "coin_name_asc"
-                    ? setOrderBy("coin_name_desc")
-                    : setOrderBy("coin_name_asc");
-                }}
-              />
-            </th>
+            <th id="coin-name">Name</th>
             <th>
               Price
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "price_asc"
                     ? setOrderBy("price_desc")
@@ -147,7 +178,8 @@ export default function CoinTable() {
             </th>
             <th>
               Market Cap
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "market_cap_desc"
                     ? setOrderBy("market_cap_asc")
@@ -169,7 +201,9 @@ export default function CoinTable() {
                 <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
               </td>
               <td onClick={() => handleRowClick(coin)}>
-                <p>{coin.name}</p>
+                <p>
+                  <strong>{coin.name}</strong>
+                </p>
               </td>
               <td onClick={() => handleRowClick(coin)}>
                 {formatter.format(coin.current_price)}
@@ -202,6 +236,27 @@ export default function CoinTable() {
           </tbody>
         ))}
       </table>
+      <div className="bottom-section">
+        <div className="search-section">
+          <DenomSelector />
+        </div>
+
+        <div className="arrow-buttons">
+          <button
+            disabled={pageNumber === 1 ? true : false}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="page-arrow"
+          >
+            <FaAngleLeft />
+          </button>
+          <button
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="page-arrow"
+          >
+            <FaAngleRight />
+          </button>
+        </div>
+      </div>
     </>
   );
 }

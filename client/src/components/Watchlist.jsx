@@ -1,6 +1,7 @@
 import "./Watchlist.scss";
 import { useEffect, useState } from "react";
-import { FaStar, FaArrowsAltV } from "react-icons/fa";
+import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
+import { TiArrowUnsorted } from "react-icons/ti";
 import CoinGecko from "coingecko-api";
 import { useHistory } from "react-router-dom";
 import "./Coins/CoinTable.scss";
@@ -17,6 +18,8 @@ export default function Watchlist() {
 
   const [orderBy, setOrderBy] = useState("market_cap_desc");
 
+  const [varBalance, setVarBalance] = useState("cad");
+
   const numColor = (num) => {
     if (num[0] === "-") {
       return <div style={{ color: "red" }}>{num}</div>;
@@ -26,8 +29,26 @@ export default function Watchlist() {
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "CAD",
+    currency: varBalance,
   });
+
+  const DenomSelector = () => {
+    return (
+      <select
+        value={varBalance}
+        onChange={(event) => {
+          setVarBalance(event.target.value);
+        }}
+      >
+        <option>cad</option>
+        <option>usd</option>
+        <option>eur</option>
+        <option>gbp</option>
+        <option>aud</option>
+        <option>chf</option>
+      </select>
+    );
+  };
 
   const isWatchlist = () => {
     if (watchlist.length === 0 || watchlist[0] === "") {
@@ -42,7 +63,7 @@ export default function Watchlist() {
         .markets({
           order: orderBy,
           per_page: 50,
-          vs_currency: "cad",
+          vs_currency: varBalance,
           page: pageNumber,
           ids: isWatchlist(),
         })
@@ -50,7 +71,7 @@ export default function Watchlist() {
     };
 
     getCoinData();
-  }, [watchlist, pageNumber, orderBy]);
+  }, [watchlist, pageNumber, orderBy, varBalance]);
 
   const removeFromWatchlist = (coin) => {
     const newWatchList = watchlist.filter((item) => item !== coin.id);
@@ -65,25 +86,34 @@ export default function Watchlist() {
 
   return (
     <>
-      <button
-        disabled={pageNumber === 1 ? true : false}
-        onClick={() => setPageNumber(pageNumber - 1)}
-      >
-        Prev
-      </button>
-      <button
-        disabled={watchlist.length <= 50 * pageNumber ? true : false}
-        onClick={() => setPageNumber(pageNumber + 1)}
-      >
-        Next
-      </button>
-
+      <div className="top-section">
+        <div>
+          <DenomSelector />
+        </div>
+        <div className="arrow-buttons">
+          <button
+            disabled={pageNumber === 1 ? true : false}
+            onClick={() => setPageNumber(pageNumber - 1)}
+            className="page-arrow"
+          >
+            <FaAngleLeft />
+          </button>
+          <button
+            disabled={watchlist.length <= 50 * pageNumber ? true : false}
+            onClick={() => setPageNumber(pageNumber + 1)}
+            className="page-arrow"
+          >
+            <FaAngleRight />
+          </button>
+        </div>
+      </div>
       <table className="coins-table">
         <thead>
           <tr>
             <th>
               Rank
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "market_cap_desc"
                     ? setOrderBy("market_cap_asc")
@@ -92,19 +122,11 @@ export default function Watchlist() {
               />
             </th>
             <th></th>
-            <th>
-              Name
-              <FaArrowsAltV
-                onClick={() => {
-                  orderBy === "coin_name_asc"
-                    ? setOrderBy("coin_name_desc")
-                    : setOrderBy("coin_name_asc");
-                }}
-              />
-            </th>
+            <th id="coin-name">Name </th>
             <th>
               Price
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "price_asc"
                     ? setOrderBy("price_desc")
@@ -114,7 +136,8 @@ export default function Watchlist() {
             </th>
             <th>
               Market Cap
-              <FaArrowsAltV
+              <TiArrowUnsorted
+                className="arrow"
                 onClick={() => {
                   orderBy === "market_cap_desc"
                     ? setOrderBy("market_cap_asc")

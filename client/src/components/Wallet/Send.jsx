@@ -20,11 +20,26 @@ const Send = (props) => {
 
   const bchClick = (event) => {
     event.preventDefault();
-    if (address.includes("bitcoincash:") && amount > 0) {
-      props.onBchSubmit(address, Number(amount));
+
+    const amountToSend = isFiat
+      ? Number(convertFromFiat * 100000000).toFixed(0)
+      : Number(amount * 100000000).toFixed(0);
+
+    console.log(amountToSend);
+    console.log(address);
+
+    console.log("BALANCE", props.balance);
+
+    if (
+      address.includes("bitcoincash:") &&
+      Number(amountToSend) > 0 &&
+      amountToSend / 100000000 <= props.balance
+    ) {
+      props.onBchSubmit(address, Number(amountToSend));
     } else {
       console.log("ADDRESS MUST BEGIN WITH BITCOINCASH:");
       console.log("AMOUNT MUST BE GREATER THAN 0");
+      console.log("AMOUNT MUST BE LESS THAN AMOUNT");
     }
     setAddress("");
     setAmount(0);
@@ -95,7 +110,7 @@ const Send = (props) => {
     });
 
     const convertedToFiat = (
-    data.data["bitcoin-cash"][props.denomination] * e.target.value
+      data.data["bitcoin-cash"][props.denomination] * e.target.value
     ).toFixed(2);
     setConvertBch(convertedToFiat);
   };
@@ -134,6 +149,7 @@ const Send = (props) => {
                   onScan={(data) => {
                     if (data) {
                       setReadQRBch(data);
+                      setAddress(data);
                       setQrBch(false);
                     }
                   }}
@@ -141,13 +157,13 @@ const Send = (props) => {
                 />
               </>
             )}
-            
+
             {isFiat ? (
               <>
-              Amount in BCH: {convertFromFiat}
-              <button type="button" onClick={() => setIsFiat(false)}>
-                FIAT
-              </button>
+                Amount in BCH: {convertFromFiat}
+                <button type="button" onClick={() => setIsFiat(false)}>
+                  FIAT
+                </button>
                 <input
                   type="number"
                   placeholder={`Amount in ${props.denomination.toUpperCase()}`}
@@ -157,10 +173,10 @@ const Send = (props) => {
               </>
             ) : (
               <>
-              Amount in {props.denomination.toUpperCase()}: {convertBch}
-              <button type="button" onClick={() => setIsFiat(true)}>
-                BCH
-              </button>
+                Amount in {props.denomination.toUpperCase()}: {convertBch}
+                <button type="button" onClick={() => setIsFiat(true)}>
+                  BCH
+                </button>
                 <input
                   type="number"
                   placeholder="Amount in BCH"

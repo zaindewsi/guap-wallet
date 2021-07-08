@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Status from "../../images/status.png";
 
 export default function RestoreWallet(props) {
   const [input, setInput] = useState("");
@@ -23,9 +24,14 @@ export default function RestoreWallet(props) {
         onChange={(event) => setInput(event.target.value)}
       />
       <br />
-      <button type="submit" onClick={click}>
-        IMPORT
-      </button>
+
+      {props.loading ? (
+        <img className="status-image" src={Status} alt="loading" />
+      ) : (
+        <button type="submit" onClick={click}>
+          IMPORT
+        </button>
+      )}
     </div>
   );
 }

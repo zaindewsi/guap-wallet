@@ -47,7 +47,7 @@ const Wallet = () => {
       },
     ];
     const txid = await slpWallet.send(receivers);
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    alert(`https://explorer.bitcoin.com/bch/tx/${txid}`);
     retrieveBalance();
   };
 
@@ -62,7 +62,7 @@ const Wallet = () => {
       qty: tokenAmt,
     };
     const txid = await slpWallet.sendTokens(receiver, 3.0);
-    console.log(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    alert(`https://explorer.bitcoin.com/bch/tx/${txid}`);
     retrieveBalance();
   };
 
@@ -103,12 +103,14 @@ const Wallet = () => {
   };
 
   const createNewWallet = async () => {
+    setLoading(true);
     const slpWallet = new SlpWallet();
     await slpWallet.walletInfoPromise;
     setWallet(JSON.stringify(slpWallet.walletInfo));
   };
 
   const restoreExistingWallet = async (seed) => {
+    setLoading(true);
     const options = {
       apiToken: process.env.REACT_APP_BCHJSTOKEN,
     };
@@ -172,14 +174,17 @@ const Wallet = () => {
               toggle={toggle}
               tokens={listOfTokens}
               denomination={varBalance}
+              balance={balance}
             />
           </div>
-          <button onClick={clearStorage}>Clear </button>
         </>
       ) : (
         <>
-          <NewWallet onClick={createNewWallet} />
-          <RestoreWallet onSubmit={(seed) => restoreExistingWallet(seed)} />
+          <NewWallet onClick={createNewWallet} loading={loading} />
+          <RestoreWallet
+            onSubmit={(seed) => restoreExistingWallet(seed)}
+            loading={loading}
+          />
         </>
       )}
     </div>
