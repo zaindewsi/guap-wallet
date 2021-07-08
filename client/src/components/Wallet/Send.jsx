@@ -94,9 +94,9 @@ const Send = (props) => {
       vs_currencies: [props.denomination],
     });
 
-    const convertedToFiat =
-    data.data["bitcoin-cash"][props.denomination] * e.target.value;
-
+    const convertedToFiat = (
+    data.data["bitcoin-cash"][props.denomination] * e.target.value
+    ).toFixed(2);
     setConvertBch(convertedToFiat);
   };
 
