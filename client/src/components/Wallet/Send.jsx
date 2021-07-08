@@ -7,7 +7,8 @@ const Send = (props) => {
   const CoinGeckoClient = new CoinGecko();
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
-  const [convertedAmount, setConvertedAmount] = useState("");
+  const [convertFromFiat, setConvertFromFiat] = useState("");
+  const [convertBch, setConvertBch] = useState("");
   const [slpToken, setSlpToken] = useState("");
   const [tokenID, setTokenID] = useState("");
   const [readQRBch, setReadQRBch] = useState("");
@@ -15,7 +16,7 @@ const Send = (props) => {
   const [readQRSlp, setReadQRSlp] = useState("");
   const [qrSlp, setQrSlp] = useState(false);
 
-  const [isSatoshi, setIsSatoshi] = useState(true);
+  const [isFiat, setIsFiat] = useState(true);
 
   const bchClick = (event) => {
     event.preventDefault();
@@ -82,7 +83,7 @@ const Send = (props) => {
       e.target.value / data.data["bitcoin-cash"][props.denomination]
     ).toFixed(8);
 
-    setConvertedAmount(convertedFiat);
+    setConvertFromFiat(convertedFiat);
   };
 
   const convertToFiat = async (e) => {
@@ -93,10 +94,10 @@ const Send = (props) => {
       vs_currencies: [props.denomination],
     });
 
-    const convertedFiat =
-      e.target.value * data.data["bitcoin-cash"][props.denomination];
+    const convertedToFiat =
+    data.data["bitcoin-cash"][props.denomination] * e.target.value;
 
-    setConvertedAmount(convertedFiat);
+    setConvertBch(convertedToFiat);
   };
 
   return (
@@ -140,28 +141,35 @@ const Send = (props) => {
                 />
               </>
             )}
-            <input
-              type="number"
-              placeholder={isSatoshi ? "amount in Satoshis" : "amount in BCH"}
-              value={convertedAmount}
-              onChange={(event) => convertToFiat(event)}
-            />
-            {isSatoshi ? (
-              <button type="button" onClick={() => setIsSatoshi(false)}>
-                Satoshi
+            
+            {isFiat ? (
+              <>
+              Amount in BCH: {convertFromFiat}
+              <button type="button" onClick={() => setIsFiat(false)}>
+                FIAT
               </button>
+                <input
+                  type="number"
+                  placeholder={`Amount in ${props.denomination.toUpperCase()}`}
+                  value={amount}
+                  onChange={(event) => convertFiat(event)}
+                />
+              </>
             ) : (
-              <button type="button" onClick={() => setIsSatoshi(true)}>
+              <>
+              Amount in {props.denomination.toUpperCase()}: {convertBch}
+              <button type="button" onClick={() => setIsFiat(true)}>
                 BCH
               </button>
+                <input
+                  type="number"
+                  placeholder="Amount in BCH"
+                  value={amount}
+                  onChange={(event) => convertToFiat(event)}
+                />
+              </>
             )}
-            OR
-            <input
-              type="number"
-              placeholder={`Amount in ${props.denomination.toUpperCase()}`}
-              value={amount}
-              onChange={(event) => convertFiat(event)}
-            />
+
             <button type="submit" onClick={bchClick}>
               Submit
             </button>
