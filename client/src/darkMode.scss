@@ -3,12 +3,12 @@ body.light-mode {
 }
 
 body.dark-mode {
-  $dark-background: #131516;
+  $dark-background: #1d1d1d;
   $dark-border: #000;
   $dark-text: #fff;
   $neutral-text: #d8d4cf;
   $selection-text: #e8e6e3;
-
+  $green: #0ac183;
   transition: background-color 0.3s ease;
 
   background-color: $dark-background;
@@ -16,13 +16,19 @@ body.dark-mode {
 
   // SIDEBAR
   .sidebar {
-    background-color: #131516;
+    background-color: $dark-background;
     border: 1px solid rgb(0, 0, 0);
+  }
+
+  button {
+    background-color: $green;
+
+    border: none;
   }
 
   // NAVBAR
   .navbar {
-    background-color: #5664d2;
+    background-color: hsl(233, 48%, 33%);
   }
 
   .settings-icon {
@@ -34,20 +40,19 @@ body.dark-mode {
     }
 
     &:active {
-      color: #7ed957;
+      color: #0ac18e;
     }
   }
 
   //MENU ITEM LIST
   .menu-item {
-    border-bottom: 1px solid #000;
-
     &:hover {
+      border-color: white;
       color: white;
     }
 
     &:active {
-      background-color: #7ed957;
+      background-color: #0ac18e;
     }
   }
   .menu-item-icon {
@@ -55,6 +60,10 @@ body.dark-mode {
   }
   .menu-item-title {
     color: $selection-text;
+  }
+
+  .active {
+    background-color: $green;
   }
 
   // WALLET

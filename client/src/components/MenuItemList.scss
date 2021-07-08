@@ -1,6 +1,5 @@
 .menu-item {
   display: flex;
-  border-bottom: 1px solid #b8b8b8;
   align-items: center;
   justify-content: flex-start;
   padding-left: 1em;
@@ -8,19 +7,29 @@
   &:hover {
     color: white;
   }
+}
 
-  &:active {
-    background-color: #7ed957;
+.active {
+  background-color: #7ed957;
+  color: white;
+
+  p {
+    color: white;
+  }
+
+  .menu-item-icon {
+    color: white;
   }
 }
+
 .menu-item-icon {
   display: flex;
   justify-content: center;
   align-items: stretch;
   font-size: 1.25em;
-  height: 100px;
+  height: 50px;
   margin-right: 0.5em;
-  color: #787777;
+  color: rgb(148, 148, 148);
 }
 .menu-item-title {
   display: flex;

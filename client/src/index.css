@@ -1,3 +1,7 @@
 * {
-  font-family: poppins;
+  font-family: Ubuntu, sans-serif;
+}
+
+table {
+  border-spacing: none;
 }

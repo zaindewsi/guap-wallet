@@ -2,3 +2,22 @@
   margin-left: 15%;
   margin-top: 6vh;
 }
+
+button {
+  background-color: #7ed957;
+  padding: 1em;
+  border: 1px solid rgb(196, 196, 196);
+  color: white;
+  font-weight: bold;
+  border-radius: 5px;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+input {
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}

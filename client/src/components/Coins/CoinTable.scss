@@ -1,17 +1,32 @@
 .coins-table {
+  tr:last-child td:first-child {
+    border-bottom-left-radius: 0px;
+  }
+  tr:first-child td:last-child {
+    border-bottom-right-radius: 0px;
+  }
+  border-collapse: separate !important;
   table-layout: auto;
-  width: 100%;
   text-align: center;
   background-color: white;
   border: 1px solid #b8b8b8;
-  margin-top: 5%;
+  margin: auto;
+  width: 95%;
+
+  border-radius: 5px;
+  border-spacing: 0 !important;
+  padding-top: 1em;
+  #coin-name {
+    text-align: left;
+    display: flex;
+  }
 }
 
 #logo-name {
   display: flex;
   text-align: left;
   align-items: center;
-  padding: 0.5em 0;
+  padding-top: 0.8em;
   justify-content: space-evenly;
   .coin-logo {
     height: 25px;
@@ -21,7 +36,7 @@
   }
 }
 p {
-  text-align: center;
+  text-align: left;
 }
 
 tr {
@@ -29,6 +44,12 @@ tr {
 
   &:hover {
     background-color: #f0f0f0;
+  }
+
+  .coins-header {
+    &:hover {
+      cursor: pointer;
+    }
   }
 }
 
@@ -42,6 +63,56 @@ tr {
   }
 }
 
-table {
-  border-collapse: collapse;
+.arrow {
+  margin-left: 1em;
+}
+
+.top-section {
+  margin: auto;
+  margin-top: 5em;
+  margin-bottom: 1em;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.coin-search {
+  width: 20em;
+  background-color: transparent;
+}
+
+.denom {
+  height: 25px;
+}
+
+.page-arrow {
+  padding: 0.3em;
+  font-size: 1.3em;
+  display: flex;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.arrow-buttons {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.search-section {
+  width: 60%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bottom-section {
+  margin: 0.5em auto;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
