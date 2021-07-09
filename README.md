@@ -4,4 +4,4 @@
 
 - Storybook
 - React
-- @psf/bch-js
+- minimal-slp-wallet
