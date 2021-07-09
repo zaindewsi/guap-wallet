@@ -3,9 +3,15 @@
   background-color: white;
   text-align: center;
   padding: 2em;
-  height: 76vh;
+  height: 78vh;
   margin-top: 5%;
-  margin-bottom: 1em;
+  margin: 2em;
+  box-shadow: 1px 1px 1px 1px rgba($color: #000, $alpha: 0.3);
+  border-radius: 5px;
+
+  &:hover {
+    box-shadow: 10px 10px 5px rgba($color: #000, $alpha: 0.3);
+  }
 }
 
 .wallet-line {

@@ -36,9 +36,11 @@ export default function Tokens(props) {
           </div>
         </>
       )}
+      <div>
       <button type="button" onClick={() => setIsTokens(true)}>
         show tokens
       </button>
+      </div>
     </>
   );
 }

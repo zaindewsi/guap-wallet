@@ -6,7 +6,7 @@
 }
 
 .add-wallet {
-  border: 1px solid #b8b8b8;
+  border: 1px solid #b8b8b8; 
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -149,4 +149,10 @@
     text-decoration: none;
     cursor: pointer;
   }
+}
+
+.seed-input {
+  width: 30%;
+  border-bottom: .5px solid;
+  text-align: center;
 }

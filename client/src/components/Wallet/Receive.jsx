@@ -20,7 +20,7 @@ const Receive = (props) => {
         className="qr-canvas"
         value={props.toggle ? props.slpAddress : props.cashAddress}
         includeMargin="true"
-        size="150"
+        size="100"
       />
       <button onClick={copy}>
         <FaCopy />
