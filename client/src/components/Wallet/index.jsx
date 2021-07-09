@@ -1,5 +1,6 @@
 import NewWallet from "./NewWallet";
 import RestoreWallet from "./RestoreWallet";
+import ExplorerLink from "./ExplorerLink";
 import Send from "./Send";
 import Balance from "./Balance";
 import Receive from "./Receive";
@@ -7,19 +8,22 @@ import SlpWallet from "minimal-slp-wallet";
 import { useEffect, useState } from "react";
 import "./Wallet.scss";
 import CoinGecko from "coingecko-api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaCopy } from "react-icons/fa";
 
 const Wallet = () => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
-
+  const [popupWalletState, setPopupWalletState] = useState("");
   const [varBalance, setVarBalance] = useState("cad");
-
   const [cadBalance, setCadBalance] = useState(0);
-
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);
   const [totalTokens, setTotalTokens] = useState(0);
   const [listOfTokens, setListOfTokens] = useState({});
+  const [popup, setPopup] = useState(true);
+  const [newSeed, setNewSeed] = useState("");
 
   const CoinGeckoClient = new CoinGecko();
 
@@ -28,12 +32,13 @@ const Wallet = () => {
   };
 
   useEffect(() => {
+    newSeed && SeedPopup();
     if (wallet) {
       localStorage.setItem("Wallet", wallet);
       retrieveBalance();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wallet, varBalance]);
+  }, [wallet, varBalance, newSeed, popup]);
 
   const parsedWallet = JSON.parse(wallet);
 
@@ -47,22 +52,20 @@ const Wallet = () => {
       },
     ];
     const txid = await slpWallet.send(receivers);
-    alert(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    toast.dark(<ExplorerLink tx={txid} />);
     retrieveBalance();
   };
 
   const sendSlp = async (address, tokenId, tokenAmt) => {
     const seed = parsedWallet.mnemonic;
-
     const slpWallet = await restoreExistingWallet(seed);
-
     const receiver = {
       address,
       tokenId,
       qty: tokenAmt,
     };
     const txid = await slpWallet.sendTokens(receiver, 3.0);
-    alert(`https://explorer.bitcoin.com/bch/tx/${txid}`);
+    toast.dark(<ExplorerLink tx={txid} />);
     retrieveBalance();
   };
 
@@ -70,9 +73,7 @@ const Wallet = () => {
     setLoading(true);
 
     const seed = parsedWallet.mnemonic;
-
     const slpWallet = await restoreExistingWallet(seed);
-
     const satoshis = await slpWallet.getBalance(slpWallet.walletInfo.address);
     const bchBalance = satoshis / 100000000;
     setBalance(bchBalance);
@@ -98,7 +99,6 @@ const Wallet = () => {
       };
     });
     setListOfTokens(tokenList);
-
     setLoading(false);
   };
 
@@ -109,7 +109,50 @@ const Wallet = () => {
     };
     const slpWallet = new SlpWallet(undefined, options);
     await slpWallet.walletInfoPromise;
-    setWallet(JSON.stringify(slpWallet.walletInfo));
+    const newInfo = await slpWallet.walletInfo.mnemonic;
+
+    if (popup) {
+      SeedPopup();
+      setNewSeed(newInfo);
+      setPopupWalletState(slpWallet.walletInfo);
+    }
+  };
+
+  const closePopup = () => {
+    setPopup(false);
+    setWallet(JSON.stringify(popupWalletState));
+  };
+
+  const SeedPopup = () => {
+    if (newSeed) {
+      return (
+        <>
+          <div className="seed-box"></div>
+          <div className="seed-popup">
+            <h1>ATTENTION!</h1>
+            <h2>
+              Please, make sure you save this seed phrase in order to access
+              your wallet in the furture!!!
+            </h2>
+            <div className="copy-seed">
+              <h3 className="seed">
+                {newSeed}{" "}
+                <button onClick={() => copy()}>
+                  <FaCopy />
+                </button>{" "}
+              </h3>
+            </div>
+            <button className="got-it" onClick={() => closePopup()}>
+              GOT IT!
+            </button>
+          </div>
+        </>
+      );
+    }
+  };
+
+  const copy = () => {
+    navigator.clipboard.writeText(newSeed);
   };
 
   const restoreExistingWallet = async (seed) => {
@@ -126,6 +169,7 @@ const Wallet = () => {
   const DenomSelector = () => {
     return (
       <select
+        className="select-denomination"
         value={varBalance}
         onChange={(event) => {
           setVarBalance(event.target.value);
@@ -144,6 +188,7 @@ const Wallet = () => {
 
   return (
     <div className="wallet">
+      <ToastContainer />
       {wallet ? (
         <>
           <Balance
@@ -178,7 +223,12 @@ const Wallet = () => {
         </>
       ) : (
         <>
-          <NewWallet onClick={createNewWallet} loading={loading} />
+          <NewWallet
+            onClick={createNewWallet}
+            loading={loading}
+            popup={SeedPopup()}
+            seed={newSeed}
+          />
           <RestoreWallet
             onSubmit={(seed) => restoreExistingWallet(seed)}
             loading={loading}

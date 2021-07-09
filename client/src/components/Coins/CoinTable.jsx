@@ -201,7 +201,7 @@ export default function CoinTable() {
                 <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
               </td>
               <td onClick={() => handleRowClick(coin)}>
-                <p>
+                <p className="name">
                   <strong>{coin.name}</strong>
                 </p>
               </td>

@@ -12,12 +12,33 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import { FaStar } from "react-icons/fa";
 
 export default function Coin() {
   const [coinData, setCoinData] = useState({});
   const [priceData, setPriceData] = useState([]);
   const [dateRange, setDateRange] = useState("max");
   const [range, setRange] = useState("daily");
+  const [watchlist, setWatchlist] = useState([]);
+
+  useEffect(() => {
+    if (watchlist) {
+      const myList = localStorage.getItem("Watchlist");
+      myList && setWatchlist(myList.split(","));
+    }
+  }, []);
+
+  const addToWatchlist = (coin) => {
+    if (!watchlist.includes(coin.id)) {
+      let newWatchList = [...watchlist, coin.id];
+      setWatchlist([...watchlist, coin.id]);
+      localStorage.setItem("Watchlist", newWatchList);
+    } else {
+      const newWatchList = watchlist.filter((item) => item !== coin.id);
+      setWatchlist(newWatchList);
+      localStorage.setItem("Watchlist", newWatchList);
+    }
+  };
 
   const { id } = useParams();
   const fetchData = async () => {
@@ -68,9 +89,42 @@ export default function Coin() {
 
   return (
     <div className="coin">
-      <h1>
-        {coinData.id} ({coinData.symbol})
-      </h1>
+      <span>
+        {coinData.image && (
+          <img
+            src={coinData.image.large}
+            alt={coinData.id}
+            style={{ width: "100px" }}
+          />
+        )}
+        <h1
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          {coinData.name} ({coinData.symbol}){" "}
+          <FaStar
+            onClick={() => addToWatchlist(coinData)}
+            className="star-coin"
+            style={
+              watchlist.includes(coinData.id)
+                ? { color: "orange" }
+                : { color: "rgb(202, 202, 202)" }
+            }
+          />
+        </h1>
+      </span>
+      <h4>Rank: {coinData.market_cap_rank}</h4>
+      <h4>
+        Current Price:{" "}
+        {coinData.market_data &&
+          coinData.market_data.current_price.cad.toLocaleString("en-US", {
+            style: "currency",
+            currency: "CAD",
+          })}
+      </h4>
       <form>
         <select
           value={dateRange}
@@ -84,48 +138,39 @@ export default function Coin() {
           <option name="1">1</option>
         </select>
       </form>
+      <div className="graph-container">
+        <ResponsiveContainer>
+          <LineChart data={priceData} style={{ color: "black" }}>
+            <CartesianGrid strokeDasharray="1" />
+            <XAxis dataKey="date" tick="false" />
+            <YAxis
+              dataKey="price"
+              domain={["auto", "auto"]}
+              tickFormatter={formatMoney}
+            />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="price"
+              stroke="#8884d8"
+              dot={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
 
-      <ResponsiveContainer
-        width={1000}
-        height={300}
-        className="graph-conatiner"
-      >
-        <LineChart
-          data={priceData}
-          margin={{
-            top: 5,
-            right: 30,
-            left: 20,
-            bottom: 5,
-          }}
-        >
-          <CartesianGrid strokeDasharray="1" />
-          <XAxis dataKey="date" tick="false" />
-          <YAxis
-            dataKey="price"
-            domain={["auto", "auto"]}
-            tickFormatter={formatMoney}
-          />
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="price" stroke="#8884d8" dot={false} />
-        </LineChart>
-      </ResponsiveContainer>
+      <h4>Last updated: {coinData.last_updated}</h4>
+      <h4>Genesis Date: {coinData.genesis_date}</h4>
 
-      <p>Last updated: {coinData.last_updated}</p>
-      <p>Genesis Date: {coinData.genesis_date}</p>
-      <p>
-        Price:{" "}
-        {coinData.market_data &&
-          coinData.market_data.current_price.cad.toLocaleString("en-US", {
-            style: "currency",
-            currency: "CAD",
-          })}
-      </p>
-      <h1>{coinData.market_cap_rank}</h1>
-      {coinData.image && <img src={coinData.image.large} alt={coinData.id} />}
       {coinData.description && (
-        <p dangerouslySetInnerHTML={{ __html: coinData.description.en }} />
+        <>
+          <h2>Description</h2>
+          <p
+            dangerouslySetInnerHTML={{ __html: coinData.description.en }}
+            className="coin-description"
+          />
+        </>
       )}
     </div>
   );

@@ -31,8 +31,8 @@ export default function Balance(props) {
         />
         <p>SLP</p>
       </div>
-      <h1> BALANCE </h1>
       <div>{props.denominations}</div>
+      <h1> BALANCE </h1>
       {props.loading ? (
         <img className="status-image" src={Status} alt="loading" />
       ) : (

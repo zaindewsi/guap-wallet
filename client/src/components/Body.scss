@@ -5,9 +5,11 @@ button {
   color: white;
   font-weight: bold;
   border-radius: 5px;
+  text-transform: uppercase;
 
   &:hover {
     transform: scale(1.05);
+    cursor: pointer;
   }
 }
 

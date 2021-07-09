@@ -159,7 +159,9 @@ export default function Watchlist() {
                 <img className="coin-logo" src={coin.image} alt={coin.name} />{" "}
               </td>
               <td onClick={() => handleRowClick(coin)}>
-                <p>{coin.name}</p>
+                <strong>
+                  <p className="name">{coin.name}</p>
+                </strong>
               </td>
               <td onClick={() => handleRowClick(coin)}>
                 {formatter.format(coin.current_price)}
