@@ -104,7 +104,10 @@ const Wallet = () => {
 
   const createNewWallet = async () => {
     setLoading(true);
-    const slpWallet = new SlpWallet();
+    const options = {
+      apiToken: process.env.REACT_APP_BCHJSTOKEN,
+    };
+    const slpWallet = new SlpWallet(undefined, options);
     await slpWallet.walletInfoPromise;
     setWallet(JSON.stringify(slpWallet.walletInfo));
   };
@@ -118,11 +121,6 @@ const Wallet = () => {
     await slpWallet.walletInfoPromise;
     setWallet(JSON.stringify(slpWallet.walletInfo));
     return slpWallet;
-  };
-
-  const clearStorage = () => {
-    localStorage.removeItem("Wallet");
-    setWallet(false);
   };
 
   const DenomSelector = () => {
