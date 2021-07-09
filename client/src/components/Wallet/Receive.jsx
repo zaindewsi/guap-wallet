@@ -12,21 +12,20 @@ const Receive = (props) => {
 
   return (
     <div className="receive">
-      <h1>
-        <FaWallet />
-        Receive
-      </h1>
+      <h1>Receive 💰</h1>
       <QRCode
         className="qr-canvas"
         value={props.toggle ? props.slpAddress : props.cashAddress}
-        includeMargin="true"
-        size="150"
+        includeMargin={true}
+        size={Number(150)}
       />
-      <button onClick={copy}>
-        <FaCopy />
-      </button>
 
-      <p>{props.toggle ? props.slpAddress : props.cashAddress}</p>
+      <p>
+        {props.toggle ? props.slpAddress : props.cashAddress}{" "}
+        <button onClick={copy}>
+          <FaCopy />
+        </button>
+      </p>
     </div>
   );
 };

@@ -17,7 +17,18 @@ body.dark-mode {
   // SIDEBAR
   .sidebar {
     background-color: $dark-background;
-    border: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid #fff;
+    border-left: none;
+    border-bottom: none;
+    border-top: none;
+  }
+
+  select {
+    border: none;
+  }
+
+  a {
+    color: turquoise;
   }
 
   button {
@@ -69,7 +80,7 @@ body.dark-mode {
   // WALLET
 
   .add-wallet {
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid #fff;
 
     background-color: $dark-background;
   }
@@ -126,5 +137,24 @@ body.dark-mode {
   .settings {
     background-color: $dark-background;
     border: 1px solid #b8b8b8;
+  }
+
+  .settings-button {
+    background-color: transparent;
+  }
+
+  .seed-popup .seed {
+    background-color: $dark-background;
+  }
+
+  .got-it {
+    color: white;
+  }
+  input {
+    color: white;
+  }
+
+  .about {
+    background-color: $dark-background;
   }
 }

@@ -119,10 +119,11 @@ const Send = (props) => {
     <div className="send">
       {!props.toggle ? (
         <>
-          <h1>Send BCH</h1>
+          <h1>Send BCH 💸</h1>
           <form>
             <div style={{ display: "flex" }}>
               <input
+                className="bch-address"
                 type="text"
                 placeholder="bitcoincash:"
                 value={readQRBch ? readQRBch : address}
@@ -131,18 +132,19 @@ const Send = (props) => {
                     ? setAddress(event.target.value)
                     : setAddress(readQRBch);
                 }}
-              />
-              <button type="button" onClick={qrClickBch}>
+              ></input>
+              <button type="button" onClick={qrClickBch} className="qr-button">
                 <ImQrcode />
               </button>
-              <button type="button" onClick={clearBch}>
-                Clear
+              <button type="button" onClick={clearBch} className="clear-button">
+                CLEAR
               </button>
             </div>
             {qrBch && (
-              <>
+              <div className="scanner-background">
                 <QrReader
-                  delay={300}
+                  className="scanner"
+                  delay={200}
                   onError={(err) => {
                     console.error(err);
                   }}
@@ -153,48 +155,69 @@ const Send = (props) => {
                       setQrBch(false);
                     }
                   }}
-                  style={{ width: "100%" }}
                 />
-              </>
+                <h1 onClick={qrClickBch} className="scanner-close">
+                  X
+                </h1>
+              </div>
             )}
 
             {isFiat ? (
               <>
-                Amount in BCH: {convertFromFiat}
-                <button type="button" onClick={() => setIsFiat(false)}>
-                  FIAT
-                </button>
-                <input
-                  type="number"
-                  placeholder={`Amount in ${props.denomination.toUpperCase()}`}
-                  value={amount}
-                  onChange={(event) => convertFiat(event)}
-                />
+                <h3>Amount in BCH: {convertFromFiat}</h3>
+                <form className="send-from">
+                  <div style={{ display: "flex" }}>
+                    <input
+                      type="number"
+                      placeholder={`Amount in ${props.denomination.toUpperCase()}`}
+                      value={amount}
+                      onChange={(event) => convertFiat(event)}
+                      className="fiat-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setIsFiat(false)}
+                      className="denom-button"
+                    >
+                      FIAT
+                    </button>
+                  </div>
+                </form>
               </>
             ) : (
               <>
-                Amount in {props.denomination.toUpperCase()}: {convertBch}
-                <button type="button" onClick={() => setIsFiat(true)}>
-                  BCH
-                </button>
-                <input
-                  type="number"
-                  placeholder="Amount in BCH"
-                  value={amount}
-                  onChange={(event) => convertToFiat(event)}
-                />
+                <h3>
+                  Amount in {props.denomination.toUpperCase()}: {convertBch}
+                </h3>
+                <form>
+                  <div style={{ display: "flex" }}>
+                    <input
+                      type="number"
+                      placeholder="Amount in BCH"
+                      value={amount}
+                      onChange={(event) => convertToFiat(event)}
+                    />
+                    <button
+                      type="button"
+                      className="denom-button"
+                      onClick={() => setIsFiat(true)}
+                    >
+                      BCH
+                    </button>
+                  </div>
+                </form>
               </>
             )}
 
             <button type="submit" onClick={bchClick}>
-              Submit
+              SEND
             </button>
           </form>
         </>
       ) : (
         <>
-          <h1>Send SLP</h1>
-          <form>
+          <h1>Send SLP 💸</h1>
+          <form className="slp-form">
             <div style={{ display: "flex" }}>
               <input
                 type="text"
@@ -206,17 +229,18 @@ const Send = (props) => {
                     : setAddress(readQRSlp);
                 }}
               />
-              <button type="button" onClick={qrClickSlp}>
+              <button type="button" onClick={qrClickSlp} className="qr-button">
                 <ImQrcode />
               </button>
-              <button type="button" onClick={clearSlp}>
-                Clear
+              <button type="button" onClick={clearSlp} className="clear-button">
+                CLEAR
               </button>
             </div>
             {qrSlp && (
-              <>
+              <div className="scanner-background">
                 <QrReader
-                  delay={300}
+                  className="scanner"
+                  delay={200}
                   onError={(err) => {
                     console.error(err);
                   }}
@@ -226,30 +250,40 @@ const Send = (props) => {
                       setQrSlp(false);
                     }
                   }}
-                  style={{ width: "100%" }}
                 />
-              </>
+                <h1 onClick={qrClickSlp} className="scanner-close">
+                  X
+                </h1>
+              </div>
             )}
-            <select
-              name="token"
-              value={slpToken}
-              onChange={(event) => {
-                setTokenID(event.target[event.target.selectedIndex].id);
-                setSlpToken(event.target.value);
-              }}
-            >
-              <option disabled>please select token</option>
-              <TokenList />
-            </select>
+            <br />
+            <br />
+            <br />
+            <div style={{ display: "flex" }}>
+              <input
+                type="number"
+                placeholder="Amount of tokens"
+                value={amount}
+                onChange={(event) => setAmount(event.target.value)}
+              />
+              <select
+                className="select-token"
+                name="token"
+                value={slpToken}
+                onChange={(event) => {
+                  setTokenID(event.target[event.target.selectedIndex].id);
+                  setSlpToken(event.target.value);
+                }}
+              >
+                <option selected="selected" disabled value="" hidden>
+                  please select token
+                </option>
 
-            <input
-              type="number"
-              placeholder="amount of tokens"
-              value={amount}
-              onChange={(event) => setAmount(event.target.value)}
-            />
+                <TokenList />
+              </select>
+            </div>
             <button type="submit" onClick={slpClick}>
-              Submit
+              SEND
             </button>
           </form>
         </>

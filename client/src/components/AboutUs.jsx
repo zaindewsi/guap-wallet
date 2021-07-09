@@ -1,6 +1,7 @@
+import "./AboutUs.scss";
 export default function AboutUs() {
   return (
-    <>
+    <div className="about">
       <h1>About Us</h1>
       <p>
         Welcome to <strong>Guap!</strong>
@@ -9,8 +10,8 @@ export default function AboutUs() {
       <p>We are a BCH/SLP based non-custodial web wallet.</p>
 
       <p>
-        This wallet is only as secure as the device it runs on. Please do not
-        store large amounts of funds
+        This wallet is only as secure as the device it runs on and saves in
+        clear text on local storage. Please do not store large amounts of funds
       </p>
       <p>
         The code for this wallet can be found at Github. It uses the
@@ -22,6 +23,6 @@ export default function AboutUs() {
         tokens. It helps support the developers who work on software sponsored
         by the Permissionless Software Foundation.
       </p>
-    </>
+    </div>
   );
 }

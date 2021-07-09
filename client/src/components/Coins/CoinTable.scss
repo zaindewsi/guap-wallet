@@ -20,6 +20,16 @@
     text-align: left;
     display: flex;
   }
+
+  p {
+    text-align: left;
+  }
+}
+
+.name {
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 #logo-name {
@@ -28,15 +38,15 @@
   align-items: center;
   padding-top: 0.8em;
   justify-content: space-evenly;
+  &:hover {
+    cursor: pointer;
+  }
   .coin-logo {
     height: 25px;
     width: 25px;
     margin-left: 3em;
     text-align: right;
   }
-}
-p {
-  text-align: left;
 }
 
 tr {
@@ -60,16 +70,20 @@ tr {
 
   &:hover {
     color: orange;
+    cursor: pointer;
   }
 }
 
 .arrow {
   margin-left: 1em;
+  &:hover {
+    cursor: pointer;
+  }
 }
 
 .top-section {
   margin: auto;
-  margin-top: 4em;
+  // margin-top: .5em;
   margin-bottom: 1em;
   width: 95%;
   display: flex;
