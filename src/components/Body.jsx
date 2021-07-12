@@ -1,5 +1,4 @@
 import "./Body.scss";
-import {useState} from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import Wallet from "./Wallet";
 import CoinTable from "./Coins/CoinTable";
@@ -8,8 +7,10 @@ import Settings from "./Settings";
 import AboutUs from "./AboutUs";
 import Watchlist from "./Watchlist";
 
+import usePrefCurrency from '../hooks/usePrefCurrency'
+
 const Body = () => {
-  const [varBalance, setVarBalance] = useState('cad');
+  const [varBalance, setVarBalance] = usePrefCurrency();
   return (
     <div className="body">
       <Switch>
