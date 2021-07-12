@@ -191,12 +191,12 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: fixed;
+  position: absolute;
   background-color: transparent;
-  width: 80%;
   margin: auto;
   z-index: 2;
-  margin-top: 10em;
+  top: 0;
+  height: 100%;
 
   .seed {
     display: flex;
@@ -205,6 +205,7 @@
     padding: 1em;
     background-color: white;
     border-radius: 5px;
+    text-align: center;
 
     button {
       display: flex;
@@ -220,14 +221,13 @@
   }
 
   h2 {
-    text-align: left;
+    text-align: center;
+    width: 80%;
   }
-}
 
-.got-it {
-  background-color: white;
-  border: 3px solid #ff0000;
-  color: black;
+  .copy-seed {
+    width: 80%;
+  }
 }
 
 input {
