@@ -12,11 +12,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCopy } from "react-icons/fa";
 
-const Wallet = () => {
+const Wallet = ({varBalance, setVarBalance}) => {
   const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
   const [balance, setBalance] = useState(0);
   const [popupWalletState, setPopupWalletState] = useState("");
-  const [varBalance, setVarBalance] = useState("cad");
   const [cadBalance, setCadBalance] = useState(0);
   const [loading, setLoading] = useState(false);
   const [toggle, setToggle] = useState(false);

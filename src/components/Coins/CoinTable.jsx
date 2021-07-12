@@ -5,7 +5,7 @@ import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { TiArrowUnsorted } from "react-icons/ti";
 import { useHistory } from "react-router-dom";
 
-export default function CoinTable() {
+export default function CoinTable({varBalance, setVarBalance}) {
   const CoinGeckoClient = new CoinGecko();
   const [coins, setCoins] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
@@ -15,7 +15,6 @@ export default function CoinTable() {
   const [allCoins, setAllCoins] = useState([]);
   const [button, setButton] = useState(false);
   const [orderBy, setOrderBy] = useState("market_cap_desc");
-  const [varBalance, setVarBalance] = useState("cad");
 
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",

@@ -1,6 +1,7 @@
 import "./Body.scss";
-import Wallet from "./Wallet";
+import {useState} from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
+import Wallet from "./Wallet";
 import CoinTable from "./Coins/CoinTable";
 import Coin from "./Coins/Coin";
 import Settings from "./Settings";
@@ -8,6 +9,7 @@ import AboutUs from "./AboutUs";
 import Watchlist from "./Watchlist";
 
 const Body = () => {
+  const [varBalance, setVarBalance] = useState('cad');
   return (
     <div className="body">
       <Switch>
@@ -15,13 +17,13 @@ const Body = () => {
           <Redirect to="/wallet" />
         </Route>
         <Route path="/wallet">
-          <Wallet />
+          <Wallet varBalance={varBalance} setVarBalance={setVarBalance}/>
         </Route>
         <Route exact path="/coins">
-          <CoinTable />
+          <CoinTable varBalance={varBalance} setVarBalance={setVarBalance}/>
         </Route>
         <Route path="/coins/:id">
-          <Coin />
+          <Coin varBalance={varBalance} setVarBalance={setVarBalance}/>
         </Route>
         <Route path="/about">
           <AboutUs />
@@ -30,7 +32,7 @@ const Body = () => {
           <Settings />
         </Route>
         <Route path="/watchlist">
-          <Watchlist />
+          <Watchlist varBalance={varBalance} setVarBalance={setVarBalance}/>
         </Route>
       </Switch>
     </div>

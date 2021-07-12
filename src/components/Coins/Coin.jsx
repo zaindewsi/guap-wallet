@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { FaStar } from "react-icons/fa";
 
-export default function Coin() {
+export default function Coin({varBalance}) {
   const [coinData, setCoinData] = useState({});
   const [priceData, setPriceData] = useState([]);
   const [dateRange, setDateRange] = useState("max");
