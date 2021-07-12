@@ -120,9 +120,9 @@ export default function Coin({varBalance}) {
       <h4>
         Current Price:{" "}
         {coinData.market_data &&
-          coinData.market_data.current_price.cad.toLocaleString("en-US", {
+          coinData.market_data.current_price[varBalance].toLocaleString("en-US", {
             style: "currency",
-            currency: "CAD",
+            currency: varBalance,
           })}
       </h4>
       <form>
