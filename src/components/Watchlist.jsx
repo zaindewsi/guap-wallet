@@ -6,7 +6,7 @@ import CoinGecko from "coingecko-api";
 import { useHistory } from "react-router-dom";
 import "./Coins/CoinTable.scss";
 
-export default function Watchlist() {
+export default function Watchlist({varBalance, setVarBalance}) {
   const CoinGeckoClient = new CoinGecko();
   const [watchlist, setWatchlist] = useState(
     localStorage.getItem("Watchlist")
@@ -17,8 +17,6 @@ export default function Watchlist() {
   const [pageNumber, setPageNumber] = useState(1);
 
   const [orderBy, setOrderBy] = useState("market_cap_desc");
-
-  const [varBalance, setVarBalance] = useState("cad");
 
   const numColor = (num) => {
     if (num[0] === "-") {

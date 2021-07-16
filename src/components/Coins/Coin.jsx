@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { FaStar } from "react-icons/fa";
 
-export default function Coin() {
+export default function Coin({varBalance}) {
   const [coinData, setCoinData] = useState({});
   const [priceData, setPriceData] = useState([]);
   const [dateRange, setDateRange] = useState("max");
@@ -120,9 +120,9 @@ export default function Coin() {
       <h4>
         Current Price:{" "}
         {coinData.market_data &&
-          coinData.market_data.current_price.cad.toLocaleString("en-US", {
+          coinData.market_data.current_price[varBalance].toLocaleString("en-US", {
             style: "currency",
-            currency: "CAD",
+            currency: varBalance,
           })}
       </h4>
       <form>
