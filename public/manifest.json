@@ -11,7 +11,8 @@
     {
       "src": "guap.png",
       "sizes": "512x512 192x192 144x144",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
