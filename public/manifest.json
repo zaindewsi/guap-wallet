@@ -1,11 +1,18 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Guap",
+  "name": "Guap Wallet",
+  "description": "A non custodial web wallet for Bitcoin Cash and SLP tokens",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "guap.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
+    },
+    {
+      "src": "guap.png",
+      "sizes": "512x512 192x192 144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
