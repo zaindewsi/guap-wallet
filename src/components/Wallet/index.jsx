@@ -5,29 +5,35 @@ import Send from "./Send";
 import Balance from "./Balance";
 import Receive from "./Receive";
 import SlpWallet from "minimal-slp-wallet";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./Wallet.scss";
 import CoinGecko from "coingecko-api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCopy } from "react-icons/fa";
+import { useAppContext } from "../../hooks/AppContext";
 
-const Wallet = ({varBalance, setVarBalance}) => {
-  const [wallet, setWallet] = useState(localStorage.getItem("Wallet"));
-  const [balance, setBalance] = useState(0);
-  const [popupWalletState, setPopupWalletState] = useState("");
-  const [cadBalance, setCadBalance] = useState(0);
-  const [loading, setLoading] = useState(false);
-  const [toggle, setToggle] = useState(false);
-  const [totalTokens, setTotalTokens] = useState(0);
-  const [listOfTokens, setListOfTokens] = useState({});
-  const [popup, setPopup] = useState(true);
-  const [newSeed, setNewSeed] = useState("");
+const Wallet = ({ varBalance, setVarBalance }) => {
+  const { state, dispatch } = useAppContext();
+  const {
+    wallet,
+    balance,
+    popupWalletState,
+    cadBalance,
+    loading,
+    toggle,
+    totalTokens,
+    listOfTokens,
+    popup,
+    newSeed,
+  } = state;
 
   const CoinGeckoClient = new CoinGecko();
 
   const handleChange = (checked) => {
-    toggle ? setToggle(false) : setToggle(true);
+    toggle
+      ? dispatch({ type: "setToggle", value: false })
+      : dispatch({ type: "setToggle", value: true });
   };
 
   useEffect(() => {
@@ -69,13 +75,13 @@ const Wallet = ({varBalance, setVarBalance}) => {
   };
 
   const retrieveBalance = async () => {
-    setLoading(true);
+    dispatch({ type: "setLoading", value: true });
 
     const seed = parsedWallet.mnemonic;
     const slpWallet = await restoreExistingWallet(seed);
     const satoshis = await slpWallet.getBalance(slpWallet.walletInfo.address);
     const bchBalance = satoshis / 100000000;
-    setBalance(bchBalance);
+    dispatch({ type: "setBalance", value: bchBalance });
 
     let data = await CoinGeckoClient.simple.price({
       ids: ["bitcoin-cash"],
@@ -83,11 +89,13 @@ const Wallet = ({varBalance, setVarBalance}) => {
     });
 
     const currency = (code) => data.data["bitcoin-cash"][code];
-
-    setCadBalance(currency(varBalance) * bchBalance);
+    dispatch({
+      type: "setCadBalance",
+      value: currency(varBalance) * bchBalance,
+    });
 
     const tokens = await slpWallet.listTokens();
-    setTotalTokens(tokens.length);
+    dispatch({ type: "setTotalTokens", value: tokens.length });
 
     const tokenList = {};
     tokens.forEach((token) => {
@@ -97,12 +105,12 @@ const Wallet = ({varBalance, setVarBalance}) => {
         value: token.qty,
       };
     });
-    setListOfTokens(tokenList);
-    setLoading(false);
+    dispatch({ type: "setListOfTokens", value: tokenList });
+    dispatch({ type: "setLoading", value: false });
   };
 
   const createNewWallet = async () => {
-    setLoading(true);
+    dispatch({ type: "setLoading", value: true });
     const options = {
       apiToken: process.env.REACT_APP_BCHJSTOKEN,
     };
@@ -112,14 +120,14 @@ const Wallet = ({varBalance, setVarBalance}) => {
 
     if (popup) {
       SeedPopup();
-      setNewSeed(newInfo);
-      setPopupWalletState(slpWallet.walletInfo);
+      dispatch({ type: "setNewSeed", value: newInfo });
+      dispatch({ type: "setPopupWalletState", value: slpWallet.walletInfo });
     }
   };
 
   const closePopup = () => {
-    setPopup(false);
-    setWallet(JSON.stringify(popupWalletState));
+    dispatch({ type: "setPopup", value: false });
+    dispatch({ type: "setWallet", value: JSON.stringify(popupWalletState) });
   };
 
   const SeedPopup = () => {
@@ -155,13 +163,16 @@ const Wallet = ({varBalance, setVarBalance}) => {
   };
 
   const restoreExistingWallet = async (seed) => {
-    setLoading(true);
+    dispatch({ type: "setLoading", value: true });
     const options = {
       apiToken: process.env.REACT_APP_BCHJSTOKEN,
     };
     const slpWallet = new SlpWallet(seed, options);
     await slpWallet.walletInfoPromise;
-    setWallet(JSON.stringify(slpWallet.walletInfo));
+    dispatch({
+      type: "setWallet",
+      value: JSON.stringify(slpWallet.walletInfo),
+    });
     return slpWallet;
   };
 
