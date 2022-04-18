@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { TiArrowUnsorted } from "react-icons/ti";
 import CoinGecko from "coingecko-api";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Coins/CoinTable.scss";
 
 export default function Watchlist({varBalance, setVarBalance}) {
@@ -77,7 +77,7 @@ export default function Watchlist({varBalance, setVarBalance}) {
     localStorage.setItem("Watchlist", newWatchList);
   };
 
-  const history = useHistory();
+  const history = useNavigate();
   const handleRowClick = (coin) => {
     history.push(`/coins/${coin.id}`);
   };

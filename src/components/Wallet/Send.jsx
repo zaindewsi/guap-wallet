@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import QrReader from "react-qr-reader";
 import { ImQrcode } from "react-icons/im";
 import CoinGecko from "coingecko-api";

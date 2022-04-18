@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "./CoinTable.scss";
 import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { TiArrowUnsorted } from "react-icons/ti";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function CoinTable({varBalance, setVarBalance}) {
   const CoinGeckoClient = new CoinGecko();
@@ -21,7 +21,7 @@ export default function CoinTable({varBalance, setVarBalance}) {
     currency: varBalance,
   });
 
-  const history = useHistory();
+  const history = useNavigate();
   const handleRowClick = (coin) => {
     history.push(`/coins/${coin.id}`);
   };

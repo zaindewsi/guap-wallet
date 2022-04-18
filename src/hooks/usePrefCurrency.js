@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import {useState, useEffect} from 'react';
 
 function UsePrefCurrency(currency = 'usd') {
   const [prefCurrency, setPrefCurrency] = useState(currency);
