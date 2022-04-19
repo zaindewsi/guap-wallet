@@ -1,3 +1,4 @@
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 ###### Project's Website: https://bit.ly/guap-wallet
 
 Non-custodial cryptocurrency web wallet built on Bitcoin Cash mainnet. With the additional functionality such as keeping track of various cryptocurrency prices, adding certain coins to the watchlist and accessing more info by clicking on specific coin. 

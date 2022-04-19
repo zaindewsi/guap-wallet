@@ -1,5 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-echo "well done"
-
+exec < /dev/tty && git cz --hook || true
