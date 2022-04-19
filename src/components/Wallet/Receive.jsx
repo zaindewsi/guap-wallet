@@ -1,4 +1,4 @@
-import { FaWallet, FaCopy } from "react-icons/fa";
+import { FaCopy } from "react-icons/fa";
 import QRCode from "qrcode.react";
 
 const Receive = (props) => {
