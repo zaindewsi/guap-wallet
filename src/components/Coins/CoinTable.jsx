@@ -1,12 +1,11 @@
-import CoinGecko from "coingecko-api";
 import { useEffect, useState } from "react";
 import "./CoinTable.scss";
+import axios from "axios";
 import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { TiArrowUnsorted } from "react-icons/ti";
 import { useNavigate } from "react-router-dom";
 
-export default function CoinTable({varBalance, setVarBalance}) {
-  const CoinGeckoClient = new CoinGecko();
+export default function CoinTable({ varBalance, setVarBalance }) {
   const [coins, setCoins] = useState([]);
   const [watchlist, setWatchlist] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
@@ -34,14 +33,12 @@ export default function CoinTable({varBalance, setVarBalance}) {
   };
   useEffect(() => {
     const getCoinData = async () =>
-      await CoinGeckoClient.coins.markets({
-        order: orderBy,
-        per_page: 50,
-        vs_currency: varBalance,
-        page: pageNumber,
-        ids: searchId,
-      });
-    getCoinData().then((res) => setCoins(res.data));
+      await axios
+        .get(
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${varBalance}&ids=${searchId}&order=${orderBy}&per_page=50&page=${pageNumber}`
+        )
+        .then((res) => setCoins(res.data));
+    getCoinData();
   }, [pageNumber, searchId, searchValue, orderBy, varBalance]);
 
   const DenomSelector = () => {
@@ -65,12 +62,11 @@ export default function CoinTable({varBalance, setVarBalance}) {
 
   useEffect(() => {
     const coinData = async () =>
-      await CoinGeckoClient.coins.markets({
-        order: "market_cap_desc",
-        vs_currency: varBalance,
-        per_page: 250,
-      });
-    coinData().then((res) => setAllCoins(res.data));
+      await axios.get(
+        `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${varBalance}&order=market_cap_desc&per_page=250`
+      )
+      .then((res) => setAllCoins(res.data));
+    coinData()
   }, []);
 
   useEffect(() => {

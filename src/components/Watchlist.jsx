@@ -2,12 +2,11 @@ import "./Watchlist.scss";
 import { useEffect, useState } from "react";
 import { FaStar, FaAngleRight, FaAngleLeft } from "react-icons/fa";
 import { TiArrowUnsorted } from "react-icons/ti";
-import CoinGecko from "coingecko-api";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./Coins/CoinTable.scss";
 
 export default function Watchlist({varBalance, setVarBalance}) {
-  const CoinGeckoClient = new CoinGecko();
   const [watchlist, setWatchlist] = useState(
     localStorage.getItem("Watchlist")
       ? localStorage.getItem("Watchlist").split(",")
@@ -57,14 +56,10 @@ export default function Watchlist({varBalance, setVarBalance}) {
 
   useEffect(() => {
     const getCoinData = async () => {
-      await CoinGeckoClient.coins
-        .markets({
-          order: orderBy,
-          per_page: 50,
-          vs_currency: varBalance,
-          page: pageNumber,
-          ids: isWatchlist(),
-        })
+      await axios
+        .get(
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=${varBalance}&ids=${isWatchlist()}&order=${orderBy}&per_page=50&page=${pageNumber}`
+        )
         .then((res) => setWatchData(res.data));
     };
 
@@ -79,7 +74,7 @@ export default function Watchlist({varBalance, setVarBalance}) {
 
   const history = useNavigate();
   const handleRowClick = (coin) => {
-    history.push(`/coins/${coin.id}`);
+    history(`/coins/${coin.id}`);
   };
 
   return (

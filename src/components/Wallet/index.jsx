@@ -1,4 +1,5 @@
 import NewWallet from "./NewWallet";
+import axios from "axios";
 import RestoreWallet from "./RestoreWallet";
 import ExplorerLink from "./ExplorerLink";
 import Send from "./Send";
@@ -7,7 +8,6 @@ import Receive from "./Receive";
 import SlpWallet from "minimal-slp-wallet";
 import { useEffect, useState } from "react";
 import "./Wallet.scss";
-import CoinGecko from "coingecko-api";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaCopy } from "react-icons/fa";
@@ -24,7 +24,6 @@ const Wallet = ({varBalance, setVarBalance}) => {
   const [popup, setPopup] = useState(true);
   const [newSeed, setNewSeed] = useState("");
 
-  const CoinGeckoClient = new CoinGecko();
 
   const handleChange = (checked) => {
     toggle ? setToggle(false) : setToggle(true);
@@ -77,10 +76,9 @@ const Wallet = ({varBalance, setVarBalance}) => {
     const bchBalance = satoshis / 100000000;
     setBalance(bchBalance);
 
-    let data = await CoinGeckoClient.simple.price({
-      ids: ["bitcoin-cash"],
-      vs_currencies: [varBalance],
-    });
+    let data = await axios.get(
+      `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-cash&vs_currencies=${varBalance}`
+    )
 
     const currency = (code) => data.data["bitcoin-cash"][code];
 

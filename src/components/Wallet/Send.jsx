@@ -1,10 +1,9 @@
 import { useState } from "react";
 import QrReader from "react-qr-reader";
 import { ImQrcode } from "react-icons/im";
-import CoinGecko from "coingecko-api";
+import axios from "axios";
 
 const Send = (props) => {
-  const CoinGeckoClient = new CoinGecko();
   const [address, setAddress] = useState("");
   const [amount, setAmount] = useState("");
   const [convertFromFiat, setConvertFromFiat] = useState("");
@@ -89,10 +88,10 @@ const Send = (props) => {
   const convertFiat = async (e) => {
     setAmount(e.target.value);
 
-    let data = await CoinGeckoClient.simple.price({
-      ids: ["bitcoin-cash"],
-      vs_currencies: [props.denomination],
-    });
+    let data = await axios.get(
+      `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-cash&vs_currencies=${props.denomination}`
+    );
+    
 
     const convertedFiat = (
       e.target.value / data.data["bitcoin-cash"][props.denomination]
@@ -104,10 +103,9 @@ const Send = (props) => {
   const convertToFiat = async (e) => {
     setAmount(e.target.value);
 
-    let data = await CoinGeckoClient.simple.price({
-      ids: ["bitcoin-cash"],
-      vs_currencies: [props.denomination],
-    });
+    let data = await axios.get(
+      `https://api.coingecko.com/api/v3/simple/price?ids=bitcoin-cash&vs_currencies=${props.denomination}`
+    );
 
     const convertedToFiat = (
       data.data["bitcoin-cash"][props.denomination] * e.target.value
