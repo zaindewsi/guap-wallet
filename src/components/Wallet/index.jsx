@@ -67,12 +67,37 @@ const Wallet = ({varBalance, setVarBalance}) => {
     retrieveBalance();
   };
 
+  const burnSlpTokens = async (tokenId, tokenAmt) => {
+    const seed = parsedWallet.mnemonic;
+    const slpWallet = await restoreExistingWallet(seed);
+    try {
+      const balance = await slpWallet.getBalance()
+      if (balance === 0) {
+        console.log(
+          `The balance of your wallet is zero. Send BCH to ${
+            slpWallet.walletInfo.address
+          } to burn your tokens`
+        )
+        return
+      }
+      if (tokenAmt !== undefined) {
+        const txid = await slpWallet.burnTokens(tokenAmt, tokenId)
+        toast.dark(<ExplorerLink tx={txid} />);
+      } else {
+        const txid = await slpWallet.burnAll(tokenId)
+        toast.dark(<ExplorerLink tx={txid} />);
+      }
+    } catch (err) {
+      console.error('Error: ', err)
+    }
+  };
+
   const retrieveBalance = async () => {
     setLoading(true);
 
     const seed = parsedWallet.mnemonic;
     const slpWallet = await restoreExistingWallet(seed);
-    const satoshis = await slpWallet.getBalance(slpWallet.walletInfo.address);
+    const satoshis = await slpWallet.getBalance();
     const bchBalance = satoshis / 100000000;
     setBalance(bchBalance);
 
@@ -211,6 +236,7 @@ const Wallet = ({varBalance, setVarBalance}) => {
               onSlpSubmit={(address, tokenId, tokenAmt) =>
                 sendSlp(address, tokenId, tokenAmt)
               }
+              onSlpBurn={(tokenId, tokenAmt) => burnSlpTokens(tokenId, tokenAmt)}
               toggle={toggle}
               tokens={listOfTokens}
               denomination={varBalance}

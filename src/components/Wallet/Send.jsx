@@ -56,6 +56,17 @@ const Send = (props) => {
     setAmount(0);
   };
 
+  const slpBurn = (event) => {
+    event.preventDefault();
+    if (amount === "") {
+      props.onSlpBurn(tokenID)
+    } else {
+      props.onSlpBurn(tokenID, Number(amount))
+    }
+    setAddress("");
+    setAmount(0);
+  };
+
   const TokenList = () => {
     const tokenIds = Object.keys(props.tokens);
 
@@ -273,16 +284,21 @@ const Send = (props) => {
                   setSlpToken(event.target.value);
                 }}
               >
-                <option selected="selected" disabled value="" hidden>
+                <option disabled value="" hidden>
                   please select token
                 </option>
 
                 <TokenList />
               </select>
             </div>
-            <button type="submit" onClick={slpClick}>
+            <span className="send-burn">
+            <button type="submit" onClick={slpClick} className="send-button">
               SEND
             </button>
+            <button type="button" onClick={slpBurn} className="clear-button">
+              BURN
+            </button>
+            </span>
           </form>
         </>
       )}

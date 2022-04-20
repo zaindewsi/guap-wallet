@@ -54,6 +54,12 @@
   .clear-button {
     background-color: red;
   }
+  .send-burn {
+    flex-direction: row;
+    .send-button {
+      width: 80%;
+    }
+  }
 }
 .receive {
   display: flex;
