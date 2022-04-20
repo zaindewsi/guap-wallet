@@ -12,7 +12,6 @@ export default function CoinTable({ varBalance, setVarBalance }) {
   const [searchId, setSearchId] = useState("");
   const [searchValue, setSearchValue] = useState("");
   const [allCoins, setAllCoins] = useState([]);
-  const [button, setButton] = useState(false);
   const [orderBy, setOrderBy] = useState("market_cap_desc");
 
   const formatter = new Intl.NumberFormat("en-US", {
@@ -22,7 +21,7 @@ export default function CoinTable({ varBalance, setVarBalance }) {
 
   const history = useNavigate();
   const handleRowClick = (coin) => {
-    history.push(`/coins/${coin.id}`);
+    history(`/coins/${coin.id}`);
   };
 
   const numColor = (num) => {
@@ -89,10 +88,8 @@ export default function CoinTable({ varBalance, setVarBalance }) {
       ) {
         setSearchId(coin.id);
         setPageNumber(1);
-        setButton(true);
       } else if (shortSearch === "") {
         setSearchId("");
-        setButton(false);
       }
     });
   };
@@ -187,7 +184,7 @@ export default function CoinTable({ varBalance, setVarBalance }) {
           </tr>
         </thead>
         {coins.map((coin) => (
-          <tbody>
+          <tbody key={coin.id}>
             <tr>
               <td onClick={() => handleRowClick(coin)}>
                 {coin.market_cap_rank}

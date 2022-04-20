@@ -143,7 +143,7 @@ export default function Watchlist({varBalance, setVarBalance}) {
           </tr>
         </thead>
         {watchData.map((coin) => (
-          <tbody>
+          <tbody key={coin.id}>
             <tr>
               <td onClick={() => handleRowClick(coin)}>
                 {coin.market_cap_rank}
